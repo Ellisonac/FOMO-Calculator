@@ -1,0 +1,15 @@
+body {
+    margin: 0;
+}
+
+.banner {
+    background: hsl(171, 100%, 41%);
+}
+
+.bannerContent {
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
