@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link href="~bulma-calendar/dist/css/bulma-calendar.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./Assets/css/style.css">
+    <title>FOMO Calculator</title>
+</head>
+
+<body>
+    <div class="banner">
+        <div class="bannerContent">
+            <div class="bannerText">
+                <strong>FOMO Calculator For Stocks & Crypto</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="columns">
+        <!-- Sidebar to the left -->
+        <div class="column" id="aside">
+            <p class="bd-notification">First column</p>
+            <div class="columns is-mobile">
+
+                <!-- This is where the Stock search box will go -->
+                <div class="column">
+                    <p class="bd-notification is-info"><strong>Stocks</strong></p>
+                    <div>
+                        <div class="field has-addons">
+                            <p class="control">
+                            <input class="input" type="text" placeholder="Type in a stock name">
+                            </p>
+                            <p class="control">
+                            <button class="button is-primary">
+                                Search
+                            </button>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dropdown for Crypto -->
+                <div class="column">
+                    <p class="bd-notification is-info"><strong>Crypto</strong></p>
+                    <div class="select is-primary">
+                        <select>
+                            <option>Bitcoin (BTC)</option>
+                            <option>Ethereum (ETH)</option>
+                            <option>Tether (USDT)</option>
+                            <option>Cardano (ADA)</option>
+                            <option>Binance Coin (BNB)</option>
+                            <option>XRP (XRP)</option>
+                            <option>Solana (SOL)</option>
+                            <option>USD Coin (USDC)</option>
+                            <option>Polkadot (DOT)</option>
+                            <option>Dogecoin (DOGE)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date input -->
+            <div class="column">
+                <p>Pick Date</p>
+                <input class="input" type="date">
+            </div>
+
+            <!-- Investment input -->
+            <div class="column">
+                <p class="investment">Investment Amount</p>
+                <input class="input input2" type="text" placeholder="Money">
+            </div>
+
+        </div>
+
+        <!-- Still need to add a INPUT FORM -->
+        <div class="column" id="section">
+            <p class="bd-notification">Second column</p>
+            <div class="columns is-mobile">
+                <div class="column">
+                    <p class="bd-notification is-info">Charts</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="./Assets/script/script.js"></script>
+</body>
+
+</html>
