@@ -11,10 +11,7 @@
     <link href="~bulma-calendar/dist/css/bulma-calendar.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./Assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script
-        type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"
-        ></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
     <title>FOMO Calculator</title>
 </head>
 
@@ -51,6 +48,7 @@
                 </div>
 
                 <!-- Dropdown for Crypto -->
+                <!-- TODO - add data attributes to make API call based on coin ID easier? -->
                 <div class="column">
                     <p class="bd-notification is-info"><strong>Crypto</strong></p>
                     <div class="select is-primary">
@@ -90,7 +88,7 @@
                     Submit 🪙
                 </button>
             </div>
-
+            <div id="results" class="container">Results</div>
         </div>
 
         <!-- Still need to add a INPUT FORM -->
@@ -108,9 +106,9 @@
         </div>
     </div>
 
-
-
     <script src="./Assets/script/script.js"></script>
+    <script src="./Assets/script/charts.js"></script>
+    <script src="Assets/script/apis.js"></script>
 </body>
 
 </html>
