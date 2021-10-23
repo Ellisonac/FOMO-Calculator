@@ -2,9 +2,11 @@
 var query = "https://api.coinpaprika.com/v1/tickers/btc-bitcoin/historical?start=2010-02-15&interval=14d";
 var coinName = "BitCoin";
 
-function callCoinApi() {
+// TODO add functionality to calculate the required time step based on the given start date up until now
+// Possible intervals 5m 10m 15m 30m 45m 1h 2h 3h 6h 12h 24h 1d 7d 14d 30d 90d 365d
 
-  console.log(query);
+
+function callCoinApi() {
 
   fetch(query)
     .then(function (response) {
@@ -19,6 +21,7 @@ function callCoinApi() {
     .catch(function (error) {
       alert('Unable to connect to API. Error Code ' + error);
     });
+    
 }
 
 // Coin api charting
@@ -48,7 +51,11 @@ function displayTicker(data,coinName) {
   let config = {
     type: 'line',
     data: chartData,
-    options: {}
+    options: {
+      scales: {
+
+      }
+    }
   };
 
   let myChart = new Chart(
