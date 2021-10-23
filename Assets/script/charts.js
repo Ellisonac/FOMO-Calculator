@@ -16,8 +16,6 @@ function callCoinApi() {
     .then(function (response) {
       if (response.ok) {
         response.json().then(function (data) {
-
-          console.log(data);
           values = extractData(data,'coin');
           displayCalcs(values,coinName,'coin');
           displayTicker(values,coinName,'coin');
@@ -34,7 +32,6 @@ function callCoinApi() {
 
 // Creating chart of historic stock or coin values
 function displayTicker(values,name,type) {
-  console.log('Coin: '+name);
   
   let times = values.times;
   let prices = values.prices;
@@ -143,9 +140,6 @@ function formatPrice(price) {
   } else {
     s = price;
   }
-
-  console.log(price)
-  console.log(s)
   return '$' + s.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
