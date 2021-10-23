@@ -13,3 +13,9 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.columns {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+}
