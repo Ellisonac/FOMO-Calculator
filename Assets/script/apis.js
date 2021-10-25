@@ -1,5 +1,5 @@
 // script to handle API calls and data transfer
-//currently only grabbing bitcoin results and displaying. Need to add logic to dynamically grab the query parameters based on user input
+//Current Price for crypto selection logic.
 var optionEl= document.querySelector("select")
 var coinID =''
 var localQueryUrl= "https://api.coinpaprika.com/v1/coins/"
