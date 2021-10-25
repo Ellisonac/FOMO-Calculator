@@ -18,6 +18,7 @@ fetch(localQueryUrl)
       }) 
 }
    
+//Removing the price info if there is a previous price result present 
 function removeAllChildNodes(parent){
 parent.removeChild(parent.firstChild)
 }
