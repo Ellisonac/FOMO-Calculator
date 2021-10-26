@@ -1,16 +1,18 @@
-// Placeholder api call to get workable data
-var queryBase = "https://api.coinpaprika.com/v1/tickers/{coinName}/historical?start=";
-var coinName = "BitCoin"; // TODO get user input
 var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
-var myChart;
+var tickerChart; // 
 
-// Passing function to run displayTicker and displayCalcs
+// Wrapper function to accept api call data and run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
-  console.log(historicalData)
+  // Extract data from expected API output format based on if type = 'stock' or 'coin'
   values = extractData(historicalData,currentPrice,type);
 
-  console.log(values)
+  // Remove duplicate output, will be removed as UI adds cards for output
+  if (calcsEl.children.length > 2) {
+    while (calcsEl.children[2]) {
+      calcsEl.removeChild(calcsEl.children[2])
+    }
+  }
 
   displayTicker(values,name,type);
   displayCalcs(values,currentPrice,name);
@@ -20,8 +22,8 @@ function calcAndChart(name,currentPrice,historicalData,type) {
 // Creating chart of historic stock or coin values
 function displayTicker(values,name,type) {
   
-  if (myChart) {
-    myChart.destroy();
+  if (tickerChart) {
+    tickerChart.destroy();
   }
 
   let times = values.times;
@@ -38,13 +40,15 @@ function displayTicker(values,name,type) {
     }]
   };
   
+  // TODO, improve chart look
+  // Ideas, add cumulative area-type light shading of red and green?
   let config = {
     type: 'line',
     data: chartData,
     options: {}
   };
 
-  myChart = new Chart(
+  tickerChart = new Chart(
     document.querySelector("#stock-canvas"),
     config
   );
@@ -64,6 +68,8 @@ function displayCalcs(values,currentPrice,name) {
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
 
+  // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
+  // TODO: functionality for if a user selects a date before the coin was available
   let queryDate = moment(document.getElementById("search-date").value)
 
   mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + moment(queryDate,'yyyy-mm-dd').format('MMMM DD, YYYY') + ", you would have " + formatPrice(result);
@@ -84,7 +90,6 @@ function displayCalcs(values,currentPrice,name) {
 
 // Utility Functions
 // Function to determine which day interval to call from coinpaprika so that results are smooth and cover the whole date range.
-// TODO: Historical day is not precisely as input
 function determineInterval(startDate,endDate) {
   let maxPoints = 900; // Maximum historical points from api call
   let intervals = [1,7,14,30,90]; // coinpaprika available day intervals
@@ -120,7 +125,7 @@ function extractData(data,currentPrice,type) {
     prices.push(currentPrice)
 
   } else if (type == 'stock') {
-    // unsure of stock api data format yet
+    // Stock api, price data buried in data.chart.result[0].indicators.quote[0].high
     data.chart.result[0].indicators.quote[0].high.forEach((entry) => {
       prices.push(entry);
     })
@@ -128,6 +133,7 @@ function extractData(data,currentPrice,type) {
       times.push(moment.unix(entry).format('MMMM DD, YYYY'));
     })
   }
+
   return {'times':times,'prices':prices}
 }
 
@@ -141,7 +147,3 @@ function formatPrice(price) {
   // Add appropriate commas and formatting using regex a la https://www.codegrepper.com/code-examples/javascript/javascript+format+currency+with+commas
   return '$' + s.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
-
-// call to dummy api for testing until user button implemented
-// callCoinApi();
-
