@@ -30,6 +30,16 @@ function callCoinApi() {
     
 }
 
+// Passing function to run displayTicker and displayCalcs
+function calcAndChart(name,currentPrice,historicalData,type) {
+
+  values = extractData(historicalData,type);
+
+  displayTicker(values,name,type);
+  displayCalcs(values,name);
+}
+
+
 // Creating chart of historic stock or coin values
 function displayTicker(values,name,type) {
   
