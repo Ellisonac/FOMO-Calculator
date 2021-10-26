@@ -33,10 +33,10 @@ function callCoinApi() {
 // Passing function to run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
-  values = extractData(historicalData,type);
+  values = extractData(currentPrice,historicalData,type);
 
   displayTicker(values,name,type);
-  displayCalcs(values,name);
+  displayCalcs(values,currentPrice,name);
 }
 
 
@@ -122,7 +122,7 @@ function determineInterval(startDate,endDate) {
 
 // Function to pull times and prices from coins or stocks historical data array
 // checks if type is 'coin' or 'stock' to parse the passed in data structure
-function extractData(data,type) {
+function extractData(currentPrice,data,type) {
   let times = [];
   let prices = [];
 
@@ -131,6 +131,9 @@ function extractData(data,type) {
       times.push(moment(entry.timestamp,'YYYY-MM-DDThh:mm:ssZ').format('MMMM DD, YYYY'));
       prices.push(entry.price);
     })
+    times.push(moment().format('MMMM DD, YYYY'))
+    prices.push(currentPrice)
+
   } else if (type == 'stock') {
     // unsure of stock api data format yet
     data.forEach((entry) => {
