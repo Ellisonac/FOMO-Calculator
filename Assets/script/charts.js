@@ -5,7 +5,6 @@ var calcsEl = document.querySelector("#calculations"); // Main container for cha
 var myChart;
 
 // Dummy historic coinapi call
-
 // function callCoinApi() {
 
 //   let startDate = "2012-02-15";
@@ -14,23 +13,6 @@ var myChart;
 
 //   let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
 
-//   fetch(queryUrl)
-//     .then(function (response) {
-//       if (response.ok) {
-//         response.json().then(function (data) {
-//           values = extractData(data,'coin');
-//           displayCalcs(values,coinName,'coin');
-//           displayTicker(values,coinName,'coin');
-//         });
-//       } else {
-//         alert('Error: ' + response.statusText);
-//       }
-//     })
-//     .catch(function (error) {
-//       alert('Unable to connect to API. Error Code ' + error);
-//     });
-    
-// }
 
 // Passing function to run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
@@ -87,7 +69,7 @@ function displayCalcs(values,currentPrice,name) {
   let prices = values.prices;
 
   let investAmount = document.querySelector("#invest").value; // TODO, replace with user input
-  let result = (investAmount) * (prices[prices.length-1]/prices[0]);
+  let result = (investAmount) * (currentPrice/prices[0]);
   
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
