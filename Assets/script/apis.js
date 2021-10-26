@@ -62,13 +62,16 @@ console.log(historicalUrl)
 console.log(localQueryUrl)
 var historicalUrl = "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate;
 
-var interval = determineInterval(moment(searchDate,'yyyy/mm/dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
+var startMoment = moment(searchDate,'YYYY-MM-DD')
+var endMoment = moment()
+var interval = determineInterval(startMoment.format('mm-dd-yyyy'),endMoment.format('mm-dd-yyyy'));
 
-historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval
+historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval+"d"
 
+console.log(historicalUrl)
 
 // Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
-// TODO: Historical day is not precisely as input
+
 fetch(historicalUrl)
   .then(function(historicalResponse){
    return historicalResponse.json()

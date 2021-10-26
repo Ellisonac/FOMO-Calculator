@@ -73,7 +73,12 @@ function displayCalcs(values,currentPrice,name) {
   
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
-  mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + times[0] + ", you would have " + formatPrice(result);
+
+  console.log(document.getElementById("search-date").value)
+
+  let queryDate = moment(document.getElementById("search-date").value)
+
+  mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + moment(queryDate,'yyyy-mm-dd').format('MMMM DD, YYYY') + ", you would have " + formatPrice(result);
 
   calcsEl.append(mainResult);
 
@@ -91,6 +96,7 @@ function displayCalcs(values,currentPrice,name) {
 
 // Utility Functions
 // Function to determine which day interval to call from coinpaprika so that results are smooth and cover the whole date range.
+// TODO: Historical day is not precisely as input
 function determineInterval(startDate,endDate) {
   let maxPoints = 900; // Maximum historical points from api call
   let intervals = [1,7,14,30,90]; // coinpaprika available day intervals
@@ -102,12 +108,12 @@ function determineInterval(startDate,endDate) {
   // Loop through intervals until the smallest interval that will cover the whole date range
   for (let ii = 0; ii < intervals.length; ii++) {
     if (diffDays/intervals[ii] < maxPoints) {
-      return intervals[ii]+"d"
+      return intervals[ii]
     }
   }
 
   // if no matching interval was found default behavior as 14d
-  return "14d"
+  return 14
 
 }
 
