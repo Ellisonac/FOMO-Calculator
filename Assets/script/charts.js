@@ -1,39 +1,44 @@
 // Placeholder api call to get workable data
 var queryBase = "https://api.coinpaprika.com/v1/tickers/{coinName}/historical?start=";
 var coinName = "BitCoin"; // TODO get user input
-var calcsEl = document.querySelector("#section"); // Main container for chart and calculations
+var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
+var myChart;
 
 // Dummy historic coinapi call
-function callCoinApi() {
 
-  let startDate = "2012-02-15";
-  let coinSymbol = "btc-bitcoin";
-  let interval = determineInterval(moment(startDate,'yyyy-mm-dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
+// function callCoinApi() {
 
-  let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
+//   let startDate = "2012-02-15";
+//   let coinSymbol = "btc-bitcoin";
+//   let interval = determineInterval(moment(startDate,'yyyy-mm-dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
 
-  fetch(queryUrl)
-    .then(function (response) {
-      if (response.ok) {
-        response.json().then(function (data) {
-          values = extractData(data,'coin');
-          displayCalcs(values,coinName,'coin');
-          displayTicker(values,coinName,'coin');
-        });
-      } else {
-        alert('Error: ' + response.statusText);
-      }
-    })
-    .catch(function (error) {
-      alert('Unable to connect to API. Error Code ' + error);
-    });
+//   let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
+
+//   fetch(queryUrl)
+//     .then(function (response) {
+//       if (response.ok) {
+//         response.json().then(function (data) {
+//           values = extractData(data,'coin');
+//           displayCalcs(values,coinName,'coin');
+//           displayTicker(values,coinName,'coin');
+//         });
+//       } else {
+//         alert('Error: ' + response.statusText);
+//       }
+//     })
+//     .catch(function (error) {
+//       alert('Unable to connect to API. Error Code ' + error);
+//     });
     
-}
+// }
 
 // Passing function to run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
-  values = extractData(currentPrice,historicalData,type);
+  console.log(historicalData)
+  values = extractData(historicalData,currentPrice,type);
+
+  console.log(values)
 
   displayTicker(values,name,type);
   displayCalcs(values,currentPrice,name);
@@ -43,6 +48,10 @@ function calcAndChart(name,currentPrice,historicalData,type) {
 // Creating chart of historic stock or coin values
 function displayTicker(values,name,type) {
   
+  if (myChart) {
+    myChart.destroy();
+  }
+
   let times = values.times;
   let prices = values.prices;
 
@@ -63,7 +72,7 @@ function displayTicker(values,name,type) {
     options: {}
   };
 
-  let myChart = new Chart(
+  myChart = new Chart(
     document.querySelector("#stock-canvas"),
     config
   );
@@ -71,13 +80,13 @@ function displayTicker(values,name,type) {
 }
 
 // Calculating potential earnings and adding to ui
-function displayCalcs(values,name) {
+function displayCalcs(values,currentPrice,name) {
 
   // pull list of times and prices from extracted data
   let times = values.times;
   let prices = values.prices;
 
-  let investAmount = 10000; // TODO, replace with user input
+  let investAmount = document.querySelector("#invest").value; // TODO, replace with user input
   let result = (investAmount) * (prices[prices.length-1]/prices[0]);
   
   // Display main FOMO calculation
@@ -122,7 +131,7 @@ function determineInterval(startDate,endDate) {
 
 // Function to pull times and prices from coins or stocks historical data array
 // checks if type is 'coin' or 'stock' to parse the passed in data structure
-function extractData(currentPrice,data,type) {
+function extractData(data,currentPrice,type) {
   let times = [];
   let prices = [];
 
@@ -156,5 +165,5 @@ function formatPrice(price) {
 }
 
 // call to dummy api for testing until user button implemented
-callCoinApi();
+// callCoinApi();
 

@@ -15,6 +15,7 @@ fetch(localQueryUrl)
   }).then(function(data){
    console.log(data)
   displayText(data)
+  return data
   
       }) 
 }
@@ -59,16 +60,26 @@ var historicalUrl= "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]
 localQueryUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets"
 console.log(historicalUrl)
 console.log(localQueryUrl)
+var historicalUrl = "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate;
+
+var interval = determineInterval(moment(searchDate,'yyyy/mm/dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
+
+historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval
+
+
+// Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
+// TODO: Historical day is not precisely as input
 fetch(historicalUrl)
   .then(function(historicalResponse){
    return historicalResponse.json()
   }).then(function(historical){
-
-var historicalPrice= historical[0].close
-historicalPrice =historicalPrice.toFixed(2)
-console.log(historicalPrice)
-})
-currentPrice()
+    fetch(localQueryUrl)
+      .then(function(response){
+        return response.json()
+      }).then(function(data){
+        calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin')
+        }) 
+    })
   })
 
 dateEl.addEventListener("click",function(e){
