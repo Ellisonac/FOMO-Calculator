@@ -32,7 +32,6 @@
     <div class="columns">
         <!-- Sidebar to the left -->
         <div class="column" id="aside">
-            <p class="bd-notification">First column</p>
             <div class="columns is-mobile">
 
                 <!-- This is where the Stock search box will go -->
@@ -75,14 +74,14 @@
 
             <!-- Date input -->
             <div class="column">
-                <p>Pick Date</p>
+                <p>Investment Date</p>
                 <input id="search-date" class="input" type="date">
             </div>
 
             <!-- Investment input -->
             <div class="column">
                 <p class="investment">Investment Amount</p>
-                <input class="input input2" type="text" placeholder="Money">
+                <input class="input" id="invest" type="text" placeholder="Money">
             </div>
 
             <div class="column">
@@ -97,8 +96,7 @@
         </div>
 
         <!-- Still need to add a INPUT FORM -->
-        <div class="column" id="section">
-            <p class="bd-notification">Second column</p>
+        <div class="column" id="calculations">
             <div class="columns is-mobile">
                 <div class="column">
                     <p class="bd-notification is-info">Charts</p>
@@ -114,6 +112,7 @@
     <script src="./Assets/script/script.js"></script>
     <script src="./Assets/script/charts.js"></script>
     <script src="Assets/script/apis.js"></script>
+    <script src="./Assets/script/stock.js"></script>
 </body>
 
 </html>

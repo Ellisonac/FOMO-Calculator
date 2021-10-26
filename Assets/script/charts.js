@@ -1,38 +1,39 @@
 // Placeholder api call to get workable data
 var queryBase = "https://api.coinpaprika.com/v1/tickers/{coinName}/historical?start=";
 var coinName = "BitCoin"; // TODO get user input
-var calcsEl = document.querySelector("#section"); // Main container for chart and calculations
-
+var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
+var myChart;
+var investBox= document.querySelector("#invest")
 // Dummy historic coinapi call
-function callCoinApi() {
+// function callCoinApi() {
 
-  let startDate = "2012-02-15";
-  let coinSymbol = "btc-bitcoin";
-  let interval = determineInterval(moment(startDate,'yyyy-mm-dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
+//   let startDate = "2012-02-15";
+//   let coinSymbol = "btc-bitcoin";
+//   let interval = determineInterval(moment(startDate,'yyyy-mm-dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
 
-  let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
+//   let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
 
-  fetch(queryUrl)
-    .then(function (response) {
-      if (response.ok) {
-        response.json().then(function (data) {
-          values = extractData(data,'coin');
-          displayCalcs(values,coinName,'coin');
-          displayTicker(values,coinName,'coin');
-        });
-      } else {
-        alert('Error: ' + response.statusText);
-      }
-    })
-    .catch(function (error) {
-      alert('Unable to connect to API. Error Code ' + error);
-    });
-    
+
+// Passing function to run displayTicker and displayCalcs
+function calcAndChart(name,currentPrice,historicalData,type) {
+
+  console.log(historicalData)
+  values = extractData(historicalData,currentPrice,type);
+
+  console.log(values)
+
+  displayTicker(values,name,type);
+  displayCalcs(values,currentPrice,name);
 }
+
 
 // Creating chart of historic stock or coin values
 function displayTicker(values,name,type) {
   
+  if (myChart) {
+    myChart.destroy();
+  }
+
   let times = values.times;
   let prices = values.prices;
 
@@ -53,7 +54,7 @@ function displayTicker(values,name,type) {
     options: {}
   };
 
-  let myChart = new Chart(
+  myChart = new Chart(
     document.querySelector("#stock-canvas"),
     config
   );
@@ -61,14 +62,15 @@ function displayTicker(values,name,type) {
 }
 
 // Calculating potential earnings and adding to ui
-function displayCalcs(values,name) {
+function displayCalcs(values,currentPrice,name) {
 
   // pull list of times and prices from extracted data
   let times = values.times;
   let prices = values.prices;
 
-  let investAmount = 10000; // TODO, replace with user input
-  let result = (investAmount) * (prices[prices.length-1]/prices[0]);
+  let investAmount = document.querySelector("#invest").value; // TODO, replace with user input
+  investAmount= investAmount.replace(/\$|,/g, '')
+  let result = (investAmount) * (currentPrice/prices[0]);
   
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
@@ -112,7 +114,7 @@ function determineInterval(startDate,endDate) {
 
 // Function to pull times and prices from coins or stocks historical data array
 // checks if type is 'coin' or 'stock' to parse the passed in data structure
-function extractData(data,type) {
+function extractData(data,currentPrice,type) {
   let times = [];
   let prices = [];
 
@@ -121,6 +123,9 @@ function extractData(data,type) {
       times.push(moment(entry.timestamp,'YYYY-MM-DDThh:mm:ssZ').format('MMMM DD, YYYY'));
       prices.push(entry.price);
     })
+    times.push(moment().format('MMMM DD, YYYY'))
+    prices.push(currentPrice)
+
   } else if (type == 'stock') {
     // unsure of stock api data format yet
     data.forEach((entry) => {
@@ -143,5 +148,76 @@ function formatPrice(price) {
 }
 
 // call to dummy api for testing until user button implemented
-callCoinApi();
+// callCoinApi();
 
+$("input[id='invest']").on({
+  keyup: function() {
+    formatCurrency($(this));
+  },
+  blur: function() { 
+    formatCurrency($(this), "blur");
+  }
+});
+function formatNumber(n) {
+return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+function formatCurrency(input, blur) {
+// appends $ to value, validates decimal side
+// and puts cursor back in right position.
+
+var input_val = input.val();
+
+if (input_val === "") { return; }
+
+var original_len = input_val.length;
+
+var caret_pos = input.prop("selectionStart");
+  
+// check for decimal
+if (input_val.indexOf(".") >= 0) {
+
+//prevents multiple decimal places
+  var decimal_pos = input_val.indexOf(".");
+
+// split number by decimal point
+var left_side = input_val.substring(0, decimal_pos);
+var right_side = input_val.substring(decimal_pos);
+
+// add commas to left side of number
+left_side = formatNumber(left_side);
+
+// validate right side
+right_side = formatNumber(right_side);
+  
+// On blur make sure 2 numbers after decimal
+if (blur === "blur") {
+  right_side += "00";
+  }
+  
+// Limit decimal to only 2 digits
+  right_side = right_side.substring(0, 2);
+
+// join number by .
+  input_val = "$" + left_side + "." + right_side;
+
+} else {
+  // no decimal entered
+  // add commas to number
+  // remove all non-digits
+  input_val = formatNumber(input_val);
+  input_val = "$" + input_val;
+  
+  // final formatting
+  if (blur === "blur") {
+    input_val += ".00";
+  }
+}
+
+// send updated string to input
+input.val(input_val);
+
+// put caret back in the right position
+var updated_len = input_val.length;
+caret_pos = updated_len - original_len + caret_pos;
+input[0].setSelectionRange(caret_pos, caret_pos);
+}
