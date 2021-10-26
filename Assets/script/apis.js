@@ -7,6 +7,7 @@ var submitCrypto = document.getElementById("submit-crypto")
 var container = document.querySelector('#results');
 var dateEl= document.getElementById("search-date")
 //function to get current price of crypto
+
 function currentPrice(){
 removeAllChildNodes(container)
 fetch(localQueryUrl)
@@ -15,8 +16,7 @@ fetch(localQueryUrl)
   }).then(function(data){
    console.log(data)
   displayText(data)
-  
-      }) 
+  }) 
 }
 //Removing the price info if there is a previous price result present 
 function removeAllChildNodes(parent){
@@ -70,7 +70,6 @@ console.log(historicalPrice)
 })
 currentPrice()
   })
-
 dateEl.addEventListener("click",function(e){
 var searchDate= dateEl.value
 var searchDate= moment(searchDate).format()
