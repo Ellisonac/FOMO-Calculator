@@ -6,6 +6,23 @@ var localQueryUrl= "https://api.coinpaprika.com/v1/coins/"
 var submitCrypto = document.getElementById("submit-crypto")
 var container = document.querySelector('#results');
 var dateEl= document.getElementById("search-date")
+
+// Crypto drop down conversion to ID for coinpaprika call
+// Taking Coin dropdown and converting it to coin ID for query 
+var coinToID = {
+  'Bitcoin (BTC)': 'btc-bitcoin',
+  'Ethereum (ETH)': 'eth-ethereum',
+  'Tether (USDT)': 'usdt-tether',
+  'Cardano (ADA)': 'ada-cardano',
+  'Binance Coin (BNB)': 'bnb-binance-coin',
+  'XRP (XRP)': 'xrp-xrp',
+  'Solana (SOL)': 'sol-solana',
+  'USD Coin (USDC)': 'usdc-usd-coin',
+  'Polkadot (DOT)': 'dot-polkadot',
+  'Dogecoin (DOGE)':'doge-dogecoin',
+  }
+
+
 //function to get current price of crypto
 function currentPrice(){
 removeAllChildNodes(container)
@@ -24,6 +41,7 @@ function removeAllChildNodes(parent){
 parent.removeChild(parent.firstChild)
 }
 
+// Likely removable now that charts and calculations are implemented
 displayText=function(results){
   for (var i = 0; i < 1; i++) {
   var price = results[i].quotes.USD.price
@@ -37,60 +55,49 @@ displayText=function(results){
   element.appendChild(priceEl)
     }
   }
+
 ///event listener on submit crypto button
 submitCrypto.addEventListener("click",function(e){
-var searchValue= optionEl.value
-// Taking Coin dropdown and converting it to coin ID for query 
-  var coinToID = {
-  'Bitcoin (BTC)': 'btc-bitcoin',
-  'Ethereum (ETH)': 'eth-ethereum',
-  'Tether (USDT)': 'usdt-tether',
-  'Cardano (ADA)': 'ada-cardano',
-  'Binance Coin (BNB)': 'bnb-binance-coin',
-  'XRP (XRP)': 'xrp-xrp',
-  'Solana (SOL)': 'sol-solana',
-  'USD Coin (USDC)': 'usdc-usd-coin',
-  'Polkadot (DOT)': 'dot-polkadot',
-  'Dogecoin (DOGE)':'doge-dogecoin',
-  }
+  
+  let searchValue= optionEl.value
+  let searchDate = dateEl.value
 
-var searchDate= dateEl.value
-var queryDate= moment(searchDate).format().split("T")[0]
-var historicalUrl= "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate
-localQueryUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets"
-console.log(historicalUrl)
-console.log(localQueryUrl)
-var historicalUrl = "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate;
+  let queryDate= moment(searchDate).format().split("T")[0]
+  //var historicalUrl= "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate
+  //localQueryUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets"
+  
+  //var historicalUrl = "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate;
 
-var startMoment = moment(searchDate,'YYYY-MM-DD')
-var endMoment = moment()
-var interval = determineInterval(startMoment.format('mm-dd-yyyy'),endMoment.format('mm-dd-yyyy'));
+  let startMoment = moment(searchDate,'YYYY-MM-DD');
+  let endMoment = moment();
+  let interval = determineInterval(startMoment.format('mm-dd-yyyy'),endMoment.format('mm-dd-yyyy'));
 
-historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval+"d"
+  // Historical chart data api url
+  let historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval+"d";
 
-console.log(historicalUrl)
-
-// Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
-
-fetch(historicalUrl)
-  .then(function(historicalResponse){
-   return historicalResponse.json()
-  }).then(function(historical){
-    fetch(localQueryUrl)
-      .then(function(response){
-        return response.json()
-      }).then(function(data){
-        calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin')
+  // Current price data api url
+  let currentUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets";
+  
+  // Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
+  fetch(historicalUrl)
+    .then(function(historicalResponse){
+    return historicalResponse.json()
+    }).then(function(historical){
+      fetch(currentUrl)
+        .then(function(response){
+          return response.json()
+        }).then(function(data){
+          calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin');
         }) 
     })
-  })
+})
 
 dateEl.addEventListener("click",function(e){
-var searchDate= dateEl.value
-var searchDate= moment(searchDate).format()
-var queryDate= searchDate.split("T")[0]
+  var searchDate= dateEl.value
+  var searchDate= moment(searchDate).format()
+  var queryDate= searchDate.split("T")[0]
 
-// if(queryDate="Invalid date"){
-//   return alert("Please Select a")
-// }
+  // if(queryDate="Invalid date"){
+  //   return alert("Please Select a")
+  // }
 })
