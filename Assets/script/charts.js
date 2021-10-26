@@ -4,16 +4,6 @@ var coinName = "BitCoin"; // TODO get user input
 var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
 var myChart;
 
-// Dummy historic coinapi call
-// function callCoinApi() {
-
-//   let startDate = "2012-02-15";
-//   let coinSymbol = "btc-bitcoin";
-//   let interval = determineInterval(moment(startDate,'yyyy-mm-dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
-
-//   let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
-
-
 // Passing function to run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
@@ -74,8 +64,6 @@ function displayCalcs(values,currentPrice,name) {
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
 
-  console.log(document.getElementById("search-date").value)
-
   let queryDate = moment(document.getElementById("search-date").value)
 
   mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + moment(queryDate,'yyyy-mm-dd').format('MMMM DD, YYYY') + ", you would have " + formatPrice(result);
@@ -133,9 +121,11 @@ function extractData(data,currentPrice,type) {
 
   } else if (type == 'stock') {
     // unsure of stock api data format yet
-    data.forEach((entry) => {
-      times.push(entry.timestamp);
-      prices.push(entry.price);
+    data.chart.result[0].indicators.quote[0].high.forEach((entry) => {
+      prices.push(entry);
+    })
+    data.chart.result[0].timestamp.forEach((entry) => {
+      times.push(moment.unix(entry).format('MMMM DD, YYYY'));
     })
   }
   return {'times':times,'prices':prices}
