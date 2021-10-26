@@ -1,7 +1,7 @@
 // Placeholder api call to get workable data
 var queryBase = "https://api.coinpaprika.com/v1/tickers/{coinName}/historical?start=";
-var coinName = "BitCoin";
-var calcsEl = document.querySelector("#section");
+var coinName = "BitCoin"; // TODO get user input
+var calcsEl = document.querySelector("#section"); // Main container for chart and calculations
 
 // Dummy historic coinapi call
 function callCoinApi() {
@@ -36,8 +36,7 @@ function displayTicker(values,name,type) {
   let times = values.times;
   let prices = values.prices;
 
-  // pull list of times and prices from data array
-
+  // Chart.js implemented plots
   let chartData = {
     labels: times,
     datasets: [{
@@ -68,13 +67,10 @@ function displayCalcs(values,name) {
   let times = values.times;
   let prices = values.prices;
 
-  let investAmount = 10000;
+  let investAmount = 10000; // TODO, replace with user input
   let result = (investAmount) * (prices[prices.length-1]/prices[0]);
-
-  // Add appropriate commas and formatting using regex a la https://www.codegrepper.com/code-examples/javascript/javascript+format+currency+with+commas
-  // result = result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  // result = formatPrice(result);
   
+  // Display main FOMO calculation
   let mainResult = document.createElement("h2");
   mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + times[0] + ", you would have " + formatPrice(result);
 
@@ -82,6 +78,7 @@ function displayCalcs(values,name) {
 
   calcsEl.append(document.createElement("br"));
 
+  // Calculate best time to sell
   let statsMax = document.createElement("p");
   let maxIndex = prices.indexOf(Math.max(...prices));
 
@@ -101,6 +98,7 @@ function determineInterval(startDate,endDate) {
   
   let diffDays = moment.duration(end.diff(start)).asDays();
   
+  // Loop through intervals until the smallest interval that will cover the whole date range
   for (let ii = 0; ii < intervals.length; ii++) {
     if (diffDays/intervals[ii] < maxPoints) {
       return intervals[ii]+"d"
@@ -140,11 +138,10 @@ function formatPrice(price) {
   } else {
     s = price;
   }
+  // Add appropriate commas and formatting using regex a la https://www.codegrepper.com/code-examples/javascript/javascript+format+currency+with+commas
   return '$' + s.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 // call to dummy api for testing until user button implemented
 callCoinApi();
-
-// Stock api charting: May not need separate section, extract Data should handle discrepancies
 
