@@ -150,6 +150,7 @@ function formatPrice(price) {
 // call to dummy api for testing until user button implemented
 // callCoinApi();
 
+//Convert input to currecny as user inputs values
 $("input[id='invest']").on({
   keyup: function() {
     formatCurrency($(this));
