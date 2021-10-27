@@ -7,6 +7,11 @@ function calcAndChart(name,currentPrice,historicalData,type) {
   // Extract data from expected API output format based on if type = 'stock' or 'coin'
   values = extractData(historicalData,currentPrice,type);
 
+  // If current price was not defined in the api call functions, approximate it from the last historical value
+  if (currentPrice === undefined) {
+    currentPrice = values.prices[values.prices.length-1]
+  }
+
   // Remove duplicate output, will be removed as UI adds cards for output
   if (calcsEl.children.length > 2) {
     while (calcsEl.children[2]) {
@@ -62,9 +67,10 @@ function displayCalcs(values,currentPrice,name) {
   let times = values.times;
   let prices = values.prices;
 
+  
   let investAmount = extractInvestment(); 
   let result = (investAmount) * (currentPrice/prices[0]);
-  
+
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
 
