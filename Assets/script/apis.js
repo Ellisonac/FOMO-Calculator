@@ -7,6 +7,9 @@ var submitCrypto = document.getElementById("submit-crypto")
 var container = document.querySelector('#results');
 var dateEl= document.getElementById("search-date")
 var investBox= document.querySelector("#invest")
+var disableSearch = submitCrypto.disabled= true
+var validDate= true
+var cryptoSelect =document.querySelector("#select-crypto")
 //function to get current price of crypto
 function currentPrice(){
 removeAllChildNodes(container)
@@ -83,13 +86,31 @@ fetch(historicalUrl)
     })
   })
 
-dateEl.addEventListener("click",function(e){
+dateEl.addEventListener("blur",function(){
+var today=moment().format().split("T")[0]
 var searchDate= dateEl.value
 var searchDate= moment(searchDate).format()
 var queryDate= searchDate.split("T")[0]
-
-// if(queryDate="Invalid date"){
-//   return alert("Please Select a")
-// }
+if (queryDate > today){
+  validDate= false
+} 
+enableSearch()
+errorMessage()
 })
 
+//Disabling button if info is missing 
+function enableSearch(){
+if (dateEl.value.length != "0" && investBox.value != "" && validDate==true && cryptoSelect.value !=""){
+document.querySelector("#submit-crypto").disabled=false 
+} 
+}
+//error message for invalid date 
+function errorMessage() {
+
+  if (validDate== false)
+  {
+    error.innerHTML = "<span style='color: red;'>"+ "Please enter a valid date"
+  }
+  else(error.innerHTML= null)
+  console.log(error.innerHTML)
+}
