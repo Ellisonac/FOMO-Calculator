@@ -110,7 +110,7 @@ document.querySelector("#submit-crypto").disabled=false
 function errorMessage() {
   if (validDate== false)
   {
-    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter a valid date"
+    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter a non-future date"
   }
   else(document.querySelector("#error").innerHTML ="")
 }
