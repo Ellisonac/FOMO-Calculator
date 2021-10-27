@@ -70,9 +70,9 @@ function displayCalcs(values,currentPrice,name) {
 
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
-  let queryDate = moment(document.getElementById("search-date").value)
+  let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY')
 
-  mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + moment(queryDate,'yyyy-mm-dd').format('MMMM DD, YYYY') + ", you would have " + formatPrice(result);
+  mainResult.innerHTML = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`
 
   calcsEl.append(mainResult);
 
@@ -82,7 +82,7 @@ function displayCalcs(values,currentPrice,name) {
   let statsMax = document.createElement("p");
   let maxIndex = prices.indexOf(Math.max(...prices));
 
-  statsMax.innerHTML = "The best time to sell " + name + " was on " + times[maxIndex] + " at " + formatPrice(prices[maxIndex]);
+  statsMax.innerHTML = `The best time to sell ${name} was on ${times[maxIndex]} at ${formatPrice(prices[maxIndex])}`
 
   calcsEl.append(statsMax);
 
