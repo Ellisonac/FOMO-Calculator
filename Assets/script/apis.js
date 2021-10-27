@@ -94,8 +94,10 @@ var queryDate= searchDate.split("T")[0]
 if (queryDate > today){
   validDate= false
 } 
+else(validDate=true)
 enableSearch()
 errorMessage()
+
 })
 
 //Disabling button if info is missing 
@@ -106,11 +108,10 @@ document.querySelector("#submit-crypto").disabled=false
 }
 //error message for invalid date 
 function errorMessage() {
-
   if (validDate== false)
   {
-    error.innerHTML = "<span style='color: red;'>"+ "Please enter a valid date"
+    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter a valid date"
   }
-  else(error.innerHTML= null)
-  console.log(error.innerHTML)
+  else(document.querySelector("#error").innerHTML ="")
 }
+
