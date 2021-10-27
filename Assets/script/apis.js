@@ -99,12 +99,24 @@ enableSearch()
 errorMessage()
 
 })
-
 //Disabling button if info is missing 
+
+//validating the value in the investment box is not a variation of 0 or null
+var investZero= true
+function investVal(){
+  if (investBox.value==""||investBox.value=="$0.00"||investBox.value=="$.00"){
+    investZero
+  = true
+  }
+  else(investZero=false)
+  enableSearch()
+}
+//function to enable/disable search button
 function enableSearch(){
-if (dateEl.value.length != "0" && investBox.value != "" && validDate==true && cryptoSelect.value !=""){
+if (dateEl.value.length != "0" && investZero===false && validDate===true && cryptoSelect.value !=""){
 document.querySelector("#submit-crypto").disabled=false 
-} 
+}
+else(document.querySelector("#submit-crypto").disabled=true )
 }
 //error message for invalid date 
 function errorMessage() {
@@ -115,3 +127,5 @@ function errorMessage() {
   else(document.querySelector("#error").innerHTML ="")
 }
 
+investBox.addEventListener("blur",investVal)
+cryptoSelect.addEventListener("click",enableSearch)
