@@ -1,6 +1,6 @@
 var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
 var investEl = document.querySelector("#invest");
-var tickerChart; // 
+var tickerChart; //
 
 // Wrapper function to accept api call data and run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
