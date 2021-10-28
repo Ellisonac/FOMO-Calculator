@@ -11,7 +11,7 @@ var disableSearch = submitCrypto.disabled= true
 var disableStockSearch = submitStock.disabled= true
 var validDate= true
 var cryptoSelect =document.querySelector("#select-crypto")
-var stockSelect=document.querySelector("#select-stock")
+var selectStock=document.querySelector("#select-stock")
 //function to get current price of crypto
 function currentPrice(){
 removeAllChildNodes(container)
@@ -146,11 +146,12 @@ function investVal(){
 }
 //function to enable/disable search button
 function enableSearch(){
-if (dateEl.value.length != "0" && investZero===false && validDate===true && cryptoSelect.value !=""||stockSelect.value !=""){
+if (dateEl.value.length != "0" && investZero===false && validDate===true && (cryptoSelect.value !=""||selectStock.value !="")){
 document.querySelector("#submit-crypto").disabled=false 
 document.querySelector("#submit-stock").disabled=false 
 }
 else(document.querySelector("#submit-crypto").disabled=true, document.querySelector("#submit-stock").disabled=true)
+console.log(dateEl.value.length)
 }
 //error message for invalid date 
 function errorMessage() {
@@ -160,7 +161,7 @@ function errorMessage() {
   }
   else(document.querySelector("#error").innerHTML ="")
 }
-stockSelect.addEventListener("blur",enableSearch)
+selectStock.addEventListener("blur",enableSearch)
 investBox.addEventListener("blur",investVal)
 cryptoSelect.addEventListener("blur",enableSearch)
 
