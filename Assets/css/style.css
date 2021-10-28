@@ -55,3 +55,21 @@ body {
 .is-inverted {
     border: 1px solid var(--maincolor) !important;
 }
+
+.card {
+    padding: 1%;
+
+}
+
+#calculation-container {
+    display:none;
+}
+
+.card-date {
+    font-size: .75rem;
+    margin-bottom: 5px;
+}
+
+.title {
+    margin-bottom: 0px !important;
+}

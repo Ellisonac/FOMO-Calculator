@@ -2,6 +2,14 @@ var calcsEl = document.querySelector("#calculations"); // Main container for cha
 var investEl = document.querySelector("#invest");
 var tickerChart; //
 
+// New Card elements
+var infoMain = document.querySelector("#info-main div");
+var infoPast = document.querySelector("#info-past div");
+var infoChange = document.querySelector("#info-change div");
+var infoCurrent = document.querySelector("#info-current div");
+var infoChart = document.querySelector("#info-chart div");
+var infoTwitter = document.querySelector("#info-twitter div");
+
 //#info-main, #info-past, #info-change, #info-current, #info-chart, #info-twitter
 
 // Wrapper function to accept api call data and run displayTicker and displayCalcs
@@ -70,18 +78,72 @@ function displayCalcs(values,currentPrice,name) {
   let times = values.times;
   let prices = values.prices;
 
-  
+  // Calculating the final investment value
   let investAmount = extractInvestment(); 
   let result = (investAmount) * (currentPrice/prices[0]);
-
-  // Display main FOMO calculation
-  let mainResult = document.createElement("h2");
 
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
   let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY')
 
-  mainResult.innerHTML = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`
+  clearCards()
+
+  // Displaying to infoMain: primary FOMO calculation and result sentence
+  infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
+
+
+  // Displaying to infoPast: Query date and value 
+  
+  let pastHeader = document.createElement("h2");
+  pastHeader.textContent = "Then";
+  pastHeader.classList = "title is-4";
+
+  let pastDate = document.createElement("p");
+  pastDate.textContent = queryDate;
+  pastDate.classList = "card-date";
+
+  let pastBody = document.createElement("h3");
+  pastBody.textContent = formatPrice(prices[0]);
+  pastBody.classList = "title is-3";
+
+  infoPast.append(pastHeader)
+  infoPast.append(pastDate)
+  infoPast.append(pastBody)
+
+
+  // Displaying to infoChange: change in value, percent change, add red/green arrow?
+  let changeHeader = document.createElement("h2");
+  changeHeader.textContent = "Change";
+  changeHeader.classList = "title is-4";
+
+  let changeValue = document.createElement("h3");
+  changeValue.textContent = formatPrice(currentPrice-prices[0]);
+  changeValue.classList = "title is-3";
+
+  let changePercent = document.createElement("h3");
+  let pctChange = (100*(currentPrice-prices[0])/prices[0]).toFixed(3);
+  changePercent.textContent = pctChange + "%";
+  changePercent.classList = "title is-3";
+  if (currentPrice > prices[0]) {
+    changeValue.setAttribute("style","color:green")
+    changePercent.setAttribute("style","color:green")
+  } else if (currentPrice < prices[0]) {
+    changeValue.setAttribute("style","color:red")
+    changePercent.setAttribute("style","color:red")
+  }
+
+  infoChange.append(changeHeader)
+  infoChange.append(changeValue)
+  infoChange.append(changePercent)
+
+
+
+  // Display main FOMO calculation
+  let mainResult = document.createElement("h2");
+
+  
+
+  infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
 
   calcsEl.append(mainResult);
 
@@ -93,7 +155,10 @@ function displayCalcs(values,currentPrice,name) {
 
   statsMax.innerHTML = `The best time to sell ${name} was on ${times[maxIndex]} at ${formatPrice(prices[maxIndex])}`
 
-  calcsEl.append(statsMax);
+  infoChange.append(statsMax);
+
+  // TODO add a reset to rehide results?
+  document.querySelector("#calculation-container").setAttribute("style","display:block");
 
 }
 
@@ -148,8 +213,15 @@ function extractData(data,currentPrice,type) {
 
 // Convert price string or number to formatted string
 function formatPrice(price) {
+  let sign = "" // carry the minus sign to end if present
   if (typeof price !== "string") {
-    s = String(price.toFixed(2));
+    if (price >= 0) {
+      s = String(price.toFixed(2));
+    } else {
+      s = String(Math.abs(price.toFixed(2)));
+      sign = "-"
+    }
+   
   } else {
     s = price;
   }
@@ -158,7 +230,7 @@ function formatPrice(price) {
   }
 
   // Add appropriate commas and formatting using regex a la https://www.codegrepper.com/code-examples/javascript/javascript+format+currency+with+commas
-  return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return sign + s.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 // Extract investment value from formatted string
@@ -166,6 +238,16 @@ function extractInvestment() {
   let investString = investEl.value;
 
   return Number(investString.replace(/[^0-9\.-]+/g,""))
+}
+
+// Removing children from all output data cards
+function clearCards() {
+  let cards = [infoMain,infoPast,infoChange,infoCurrent,infoTwitter];
+  cards.forEach((card) => {
+    while (card.firstChild) {
+      card.removeChild(card.firstChild);
+    }
+  })
 }
 
 // Start of code from Robby-api branch
