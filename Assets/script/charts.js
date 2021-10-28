@@ -2,6 +2,8 @@ var calcsEl = document.querySelector("#calculations"); // Main container for cha
 var investEl = document.querySelector("#invest");
 var tickerChart; // 
 
+//#info-main, #info-past, #info-change, #info-current, #info-chart, #info-twitter
+
 // Wrapper function to accept api call data and run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
