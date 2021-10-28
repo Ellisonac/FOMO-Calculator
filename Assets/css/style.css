@@ -2,8 +2,12 @@ body {
     margin: 0;
 }
 
+:root {
+    --maincolor: hsl(171, 100%, 41%);
+}
+
 .banner {
-    background: hsl(171, 100%, 41%);
+    background: var(--maincolor);
 }
 
 .bannerContent {
@@ -48,4 +52,6 @@ body {
     display:none;
 }
 
-
+.is-inverted {
+    border: 1px solid var(--maincolor) !important;
+}
