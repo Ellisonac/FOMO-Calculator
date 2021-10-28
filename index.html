@@ -33,24 +33,48 @@
             <p class="bd-notification">First column</p>
             <div class="columns is-mobile">
 
+               <!-- This is where you will selecte either stock or crypto and based on your selection the next form will appear and another will hide. --> 
+               <div class="flex">
+                   <div class ="stockBtn">
+
+                    <button class="button is-primary">
+                        The Stock Market📈
+                    </button>
+                </div>
+            </div>
+            <div class = "cryptoBtn">
+                    <button class="button is-primary">
+                        Crypto Currency
+                    </button>
+                </div>
+                </div>
+
                 <!-- This is where the Stock search box will go -->
+                <div class="stocks">
                 <div class="column">
                     <p class="bd-notification is-info"><strong>Stocks</strong></p>
                     <div>
-                        <div class="field has-addons">
-                            <p class="control">
-                            <input class="input" type="text" placeholder="Type in a stock name">
+                        <div class="select is-primary">
+                            <select>
+                                <option>Disney</option>
+                                <option>Netflix</option>
+                                <option>Google</option>
+                                <option>Space X</option>
+                                <option>Apple</option>
+                                <option>Hilton</option>
+                                <option>MTV</option>
+                                <option>Gamestop</option>
+                                <option>Arbys</option>
+                                <option>AMC</option>
+                            </select>
                             </p>
-                            <p class="control">
-                            <button class="button is-primary" id="search">
-                                Search
-                            </button>
-                            </p>
+                        </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Dropdown for Crypto -->
+                <div class="crypto">
                 <div class="column">
                     <p class="bd-notification is-info"><strong>Crypto</strong></p>
                     <div class="select is-primary">
@@ -68,9 +92,11 @@
                         </select>
                     </div>
                 </div>
+                </div>
             </div>
 
             <!-- Date input -->
+            <div class="otherQuestions">
             <div class="column">
                 <p>Pick Date</p>
                 <input class="input" type="date">
@@ -81,18 +107,16 @@
                 <p class="investment">Investment Amount</p>
                 <input class="input input2" type="text" placeholder="Money">
             </div>
-
             <div class="column">
-                <button class="button is-primary" id="submit-stock">
-                    Submit 📈
-                </button>
-                <button class="button is-primary" id="submit-crypto">
-                    Submit 🪙
-                </button>
+                <div class = "stockCalBtn">
+                <button class="button is-primary is-focused">Calculate!📈</button> 
+                </div>
+                <!-- stock submit button, will appear only for crypto. I can add the id from the submit buttons -->
+                <div class ="cryptoCalBtn">
+                <button class="button is-primary is-focused">Calculate!💲</button>
+                <!-- crypto submit button, will appear only for crypto. I can add the id from the submit buttons -->
             </div>
-
-        </div>
-
+            </div>
         <!-- Still need to add a INPUT FORM -->
         <div class="column" id="section">
             <p class="bd-notification">Second column</p>
@@ -107,7 +131,6 @@
             </canvas>
         </div>
     </div>
-
 
 
     <script src="./Assets/script/script.js"></script>
