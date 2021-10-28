@@ -3,12 +3,15 @@
 var optionEl= document.querySelector("select")
 var localQueryUrl= "https://api.coinpaprika.com/v1/coins/"
 var submitCrypto = document.getElementById("submit-crypto")
+var submitStock = document.getElementById("submit-stock")
 var container = document.querySelector('#results');
 var dateEl= document.getElementById("search-date")
 var investBox= document.querySelector("#invest")
 var disableSearch = submitCrypto.disabled= true
+var disableStockSearch = submitStock.disabled= true
 var validDate= true
 var cryptoSelect =document.querySelector("#select-crypto")
+var stockSelect=document.querySelector("#select-stock")
 //function to get current price of crypto
 function currentPrice(){
 removeAllChildNodes(container)
@@ -143,19 +146,21 @@ function investVal(){
 }
 //function to enable/disable search button
 function enableSearch(){
-if (dateEl.value.length != "0" && investZero===false && validDate===true && cryptoSelect.value !=""){
+if (dateEl.value.length != "0" && investZero===false && validDate===true && cryptoSelect.value !=""||stockSelect.value !=""){
 document.querySelector("#submit-crypto").disabled=false 
+document.querySelector("#submit-stock").disabled=false 
 }
-else(document.querySelector("#submit-crypto").disabled=true )
+else(document.querySelector("#submit-crypto").disabled=true, document.querySelector("#submit-stock").disabled=true)
 }
 //error message for invalid date 
 function errorMessage() {
   if (validDate== false)
   {
-    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter a non-future date"
+    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter valid date"
   }
   else(document.querySelector("#error").innerHTML ="")
 }
-
+stockSelect.addEventListener("blur",enableSearch)
 investBox.addEventListener("blur",investVal)
-cryptoSelect.addEventListener("click",enableSearch)
+cryptoSelect.addEventListener("blur",enableSearch)
+
