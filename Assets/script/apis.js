@@ -1,11 +1,14 @@
 // script to handle API calls and data transfer
 //Current Price for crypto selection logic.
 var optionEl= document.querySelector("select")
-var coinID =''
 var localQueryUrl= "https://api.coinpaprika.com/v1/coins/"
 var submitCrypto = document.getElementById("submit-crypto")
 var container = document.querySelector('#results');
 var dateEl= document.getElementById("search-date")
+var investBox= document.querySelector("#invest")
+var disableSearch = submitCrypto.disabled= true
+var validDate= true
+var cryptoSelect =document.querySelector("#select-crypto")
 //function to get current price of crypto
 function currentPrice(){
 removeAllChildNodes(container)
@@ -24,24 +27,9 @@ function removeAllChildNodes(parent){
 parent.removeChild(parent.firstChild)
 }
 
-displayText=function(results){
-  for (var i = 0; i < 1; i++) {
-  var price = results[i].quotes.USD.price
-  price = price.toFixed(2)
-  container.innerHTML= "Current Price"
-  var priceEl = document.createElement("div")
-  priceEl.setAttribute('class','results1')
-  priceEl.innerHTML= price
-  var element = document.getElementById("results")
-  
-  element.appendChild(priceEl)
-    }
-  }
-///event listener on submit crypto button
-submitCrypto.addEventListener("click",function(e){
-var searchValue= optionEl.value
+// Crypto drop down conversion to ID for coinpaprika call
 // Taking Coin dropdown and converting it to coin ID for query 
-  var coinToID = {
+var coinToID = {
   'Bitcoin (BTC)': 'btc-bitcoin',
   'Ethereum (ETH)': 'eth-ethereum',
   'Tether (USDT)': 'usdt-tether',
@@ -54,40 +42,118 @@ var searchValue= optionEl.value
   'Dogecoin (DOGE)':'doge-dogecoin',
   }
 
-var searchDate= dateEl.value
-var queryDate= moment(searchDate).format().split("T")[0]
-var historicalUrl= "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate
-localQueryUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets"
-console.log(historicalUrl)
-console.log(localQueryUrl)
-var historicalUrl = "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate;
 
-var interval = determineInterval(moment(searchDate,'yyyy/mm/dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
+//function to get current price of crypto
+function currentPrice(){
+  removeAllChildNodes(container)
+  fetch(localQueryUrl)
+    .then(function(response){
+      return response.json()
+    }).then(function(data){
+      console.log(data)
+      displayText(data)
+      return data
+    }) 
+}
 
-historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval
+//Removing the price info if there is a previous price result present 
+function removeAllChildNodes(parent){
+  parent.removeChild(parent.firstChild)
+}
 
+// Likely removable now that charts and calculations are implemented
+displayText=function(results){
+  for (var i = 0; i < 1; i++) {
+    var price = results[i].quotes.USD.price
+    price = price.toFixed(2)
+    container.innerHTML= "Current Price"
+    var priceEl = document.createElement("div")
+    priceEl.setAttribute('class','results1')
+    priceEl.innerHTML= price
+    var element = document.getElementById("results")
+    
+    element.appendChild(priceEl)
+  }
+}
 
-// Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
-// TODO: Historical day is not precisely as input
-fetch(historicalUrl)
-  .then(function(historicalResponse){
-   return historicalResponse.json()
-  }).then(function(historical){
-    fetch(localQueryUrl)
-      .then(function(response){
-        return response.json()
-      }).then(function(data){
-        calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin')
+///event listener on submit crypto button
+function callCryptoAPI() {
+  let searchValue= optionEl.value;
+  let searchDate = dateEl.value;
+
+  let queryDate= moment(searchDate).format().split("T")[0]
+
+  // Calculating interval between points to call coinpaprika over
+  let startMoment = moment(searchDate,'YYYY-MM-DD');
+  let endMoment = moment();
+  let interval = determineInterval(startMoment.format('mm-dd-yyyy'),endMoment.format('mm-dd-yyyy'));
+
+  // Historical chart data api url
+  let historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval+"d";
+
+  // Old historical call url
+  //var historicalUrl= "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate
+
+  // Current price data api url
+  let currentUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets";
+  
+  // Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
+  fetch(historicalUrl)
+    .then(function(historicalResponse){
+    return historicalResponse.json()
+    }).then(function(historical){
+      fetch(currentUrl)
+        .then(function(response){
+          return response.json()
+        }).then(function(data){
+          calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin');
         }) 
     })
-  })
+}
 
-dateEl.addEventListener("click",function(e){
+
+submitCrypto.addEventListener("click",callCryptoAPI);
+
+dateEl.addEventListener("blur",function(){
+var today=moment().format().split("T")[0]
 var searchDate= dateEl.value
 var searchDate= moment(searchDate).format()
 var queryDate= searchDate.split("T")[0]
+if (queryDate > today){
+  validDate= false
+} 
+else(validDate=true)
+enableSearch()
+errorMessage()
 
-// if(queryDate="Invalid date"){
-//   return alert("Please Select a")
-// }
 })
+//Disabling button if info is missing 
+
+//validating the value in the investment box is not a variation of 0 or null
+var investZero= true
+function investVal(){
+  if (investBox.value==""||investBox.value=="$0.00"||investBox.value=="$.00"){
+    investZero
+  = true
+  }
+  else(investZero=false)
+  enableSearch()
+}
+//function to enable/disable search button
+function enableSearch(){
+if (dateEl.value.length != "0" && investZero===false && validDate===true && cryptoSelect.value !=""){
+document.querySelector("#submit-crypto").disabled=false 
+}
+else(document.querySelector("#submit-crypto").disabled=true )
+}
+//error message for invalid date 
+function errorMessage() {
+  if (validDate== false)
+  {
+    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter a non-future date"
+  }
+  else(document.querySelector("#error").innerHTML ="")
+}
+
+investBox.addEventListener("blur",investVal)
+cryptoSelect.addEventListener("click",enableSearch)

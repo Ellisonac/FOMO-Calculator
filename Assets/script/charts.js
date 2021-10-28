@@ -1,26 +1,24 @@
-// Placeholder api call to get workable data
-var queryBase = "https://api.coinpaprika.com/v1/tickers/{coinName}/historical?start=";
-var coinName = "BitCoin"; // TODO get user input
 var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
-var myChart;
+var investEl = document.querySelector("#invest");
+var tickerChart; // 
 
-// Dummy historic coinapi call
-// function callCoinApi() {
-
-//   let startDate = "2012-02-15";
-//   let coinSymbol = "btc-bitcoin";
-//   let interval = determineInterval(moment(startDate,'yyyy-mm-dd').format('mm-dd-yyyy'),moment().startOf('day').format('mm-dd-yyyy'));
-
-//   let queryUrl = queryBase.replace('{coinName}',coinSymbol) + startDate + "&interval="+interval
-
-
-// Passing function to run displayTicker and displayCalcs
+// Wrapper function to accept api call data and run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
-  console.log(historicalData)
+  // Extract data from expected API output format based on if type = 'stock' or 'coin'
   values = extractData(historicalData,currentPrice,type);
 
-  console.log(values)
+  // If current price was not defined in the api call functions, approximate it from the last historical value
+  if (currentPrice === undefined) {
+    currentPrice = values.prices[values.prices.length-1]
+  }
+
+  // Remove duplicate output, will be removed as UI adds cards for output
+  if (calcsEl.children.length > 2) {
+    while (calcsEl.children[2]) {
+      calcsEl.removeChild(calcsEl.children[2])
+    }
+  }
 
   displayTicker(values,name,type);
   displayCalcs(values,currentPrice,name);
@@ -30,8 +28,8 @@ function calcAndChart(name,currentPrice,historicalData,type) {
 // Creating chart of historic stock or coin values
 function displayTicker(values,name,type) {
   
-  if (myChart) {
-    myChart.destroy();
+  if (tickerChart) {
+    tickerChart.destroy();
   }
 
   let times = values.times;
@@ -48,13 +46,15 @@ function displayTicker(values,name,type) {
     }]
   };
   
+  // TODO, improve chart look
+  // Ideas, add cumulative area-type light shading of red and green?
   let config = {
     type: 'line',
     data: chartData,
     options: {}
   };
 
-  myChart = new Chart(
+  tickerChart = new Chart(
     document.querySelector("#stock-canvas"),
     config
   );
@@ -68,12 +68,18 @@ function displayCalcs(values,currentPrice,name) {
   let times = values.times;
   let prices = values.prices;
 
-  let investAmount = document.querySelector("#invest").value; // TODO, replace with user input
-  let result = (investAmount) * (currentPrice/prices[0]);
   
+  let investAmount = extractInvestment(); 
+  let result = (investAmount) * (currentPrice/prices[0]);
+
   // Display main FOMO calculation
   let mainResult = document.createElement("h2");
-  mainResult.innerHTML = "If you had bought " + formatPrice(investAmount) + " of " + name + " on " + times[0] + ", you would have " + formatPrice(result);
+
+  // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
+  // TODO: functionality for if a user selects a date before the coin was available
+  let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY')
+
+  mainResult.innerHTML = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`
 
   calcsEl.append(mainResult);
 
@@ -83,7 +89,7 @@ function displayCalcs(values,currentPrice,name) {
   let statsMax = document.createElement("p");
   let maxIndex = prices.indexOf(Math.max(...prices));
 
-  statsMax.innerHTML = "The best time to sell " + name + " was on " + times[maxIndex] + " at " + formatPrice(prices[maxIndex]);
+  statsMax.innerHTML = `The best time to sell ${name} was on ${times[maxIndex]} at ${formatPrice(prices[maxIndex])}`
 
   calcsEl.append(statsMax);
 
@@ -102,12 +108,12 @@ function determineInterval(startDate,endDate) {
   // Loop through intervals until the smallest interval that will cover the whole date range
   for (let ii = 0; ii < intervals.length; ii++) {
     if (diffDays/intervals[ii] < maxPoints) {
-      return intervals[ii]+"d"
+      return intervals[ii]
     }
   }
 
   // if no matching interval was found default behavior as 14d
-  return "14d"
+  return 14
 
 }
 
@@ -126,12 +132,15 @@ function extractData(data,currentPrice,type) {
     prices.push(currentPrice)
 
   } else if (type == 'stock') {
-    // unsure of stock api data format yet
-    data.forEach((entry) => {
-      times.push(entry.timestamp);
-      prices.push(entry.price);
+    // Stock api, price data buried in data.chart.result[0].indicators.quote[0].high
+    data.chart.result[0].indicators.quote[0].high.forEach((entry) => {
+      prices.push(entry);
+    })
+    data.chart.result[0].timestamp.forEach((entry) => {
+      times.push(moment.unix(entry).format('MMMM DD, YYYY'));
     })
   }
+
   return {'times':times,'prices':prices}
 }
 
@@ -142,10 +151,159 @@ function formatPrice(price) {
   } else {
     s = price;
   }
+  if (s[0] != '$') {
+    s = '$' + s
+  }
+
   // Add appropriate commas and formatting using regex a la https://www.codegrepper.com/code-examples/javascript/javascript+format+currency+with+commas
-  return '$' + s.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-// call to dummy api for testing until user button implemented
-// callCoinApi();
+// Extract investment value from formatted string
+function extractInvestment() {
+  let investString = investEl.value;
 
+  return Number(investString.replace(/[^0-9\.-]+/g,""))
+}
+
+// Start of code from Robby-api branch
+$("input[id='invest']").on({
+  keyup: function() {
+    formatCurrency($(this));
+  },
+  blur: function() { 
+    formatCurrency($(this), "blur");
+  }
+});
+
+function formatNumber(n) {
+  return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+function formatCurrency(input, blur) {
+  // appends $ to value, validates decimal side
+  // and puts cursor back in right position.
+
+  var input_val = input.val();
+
+  if (input_val === "") { return; }
+
+  var original_len = input_val.length;
+
+  var caret_pos = input.prop("selectionStart");
+    
+  // check for decimal
+  if (input_val.indexOf(".") >= 0) {
+
+  //prevents multiple decimal places
+    var decimal_pos = input_val.indexOf(".");
+
+  // split number by decimal point
+    var left_side = input_val.substring(0, decimal_pos);
+    var right_side = input_val.substring(decimal_pos);
+
+    // add commas to left side of number
+    left_side = formatNumber(left_side);
+
+    // validate right side
+    right_side = formatNumber(right_side);
+      
+    // On blur make sure 2 numbers after decimal
+    if (blur === "blur") {
+      right_side += "00";
+    }
+      
+    // Limit decimal to only 2 digits
+    right_side = right_side.substring(0, 2);
+
+    // join number by .
+    input_val = "$" + left_side + "." + right_side;
+
+  } else {
+    // no decimal entered
+    // add commas to number
+    // remove all non-digits
+    input_val = formatNumber(input_val);
+    input_val = "$" + input_val;
+    
+    // final formatting
+    if (blur === "blur") {
+      input_val += ".00";
+    }
+  }
+
+  // send updated string to input
+  input.val(input_val);
+
+//Convert input to currecny as user inputs values
+$("input[id='invest']").on({
+  keyup: function() {
+    formatCurrency($(this));
+  },
+  blur: function() { 
+    formatCurrency($(this), "blur");
+  }
+});
+function formatNumber(n) {
+return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+function formatCurrency(input, blur) {
+// appends $ to value, validates decimal side
+// and puts cursor back in right position.
+
+var input_val = input.val();
+
+if (input_val === "") { return; }
+
+var original_len = input_val.length;
+
+var caret_pos = input.prop("selectionStart");
+  
+// check for decimal
+if (input_val.indexOf(".") >= 0) {
+
+//prevents multiple decimal places
+  var decimal_pos = input_val.indexOf(".");
+
+// split number by decimal point
+var left_side = input_val.substring(0, decimal_pos);
+var right_side = input_val.substring(decimal_pos);
+
+// add commas to left side of number
+left_side = formatNumber(left_side);
+
+// validate right side
+right_side = formatNumber(right_side);
+  
+// On blur make sure 2 numbers after decimal
+if (blur === "blur") {
+  right_side += "00";
+  }
+  
+// Limit decimal to only 2 digits
+  right_side = right_side.substring(0, 2);
+
+// join number by .
+  input_val = "$" + left_side + "." + right_side;
+
+} else {
+  // no decimal entered
+  // add commas to number
+  // remove all non-digits
+  input_val = formatNumber(input_val);
+  input_val = "$" + input_val;
+  
+  // final formatting
+  if (blur === "blur") {
+    input_val += ".00";
+  }
+}
+
+// send updated string to input
+input.val(input_val);
+
+// put caret back in the right position
+var updated_len = input_val.length;
+caret_pos = updated_len - original_len + caret_pos;
+input[0].setSelectionRange(caret_pos, caret_pos);
+}}
