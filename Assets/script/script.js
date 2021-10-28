@@ -10,22 +10,24 @@ var cryptoCalBtn = document.querySelector('.cryptoCalBtn');
 var stockBtn
 stocksSwitch.addEventListener("click", function() {
     // console.log('click');
+    stocksSwitch.style.display = "none";
+    cryptoSwitch.style.display = "none";
+
     cryptoQuestions.style.display = "none";
     stocksQuestions.style.display = "block";
     otherQuestions.style.display = "block";
-    stocksSwitch.style.display = "none";
-    cryptoSwitch.style.display = "none";
 	stockCalBtn.style.display = "block";
 });
 
 var cryptoBtn
 cryptoSwitch.addEventListener("click", function() {
     // console.log('click');
+    stocksSwitch.style.display = "none";
+    cryptoSwitch.style.display = "none";
+
     cryptoQuestions.style.display = "block";
     stocksQuestions.style.display = "none";
     otherQuestions.style.display = "block";
-    stocksSwitch.style.display = "none";
-    cryptoSwitch.style.display = "none";
 	cryptoCalBtn.style.display = "block";
 });
 
