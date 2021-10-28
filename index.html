@@ -28,7 +28,7 @@
 
     <div class="columns">
         <!-- Sidebar to the left -->
-        <div class="column" id="aside">
+        <div class="column is-one-third" id="aside">
             <div class="columns is-mobile">
 
                 <!-- This is where you will selecte either stock or crypto and based on your selection the next form will appear and another will hide. -->
@@ -118,8 +118,8 @@
         <div class="column">
             <!-- Results output column -->
             <div class="column" id="calculations">
-                <div class="columns is-mobile">
-                    <div class="column">
+                <div class>
+                    <div class="column2">
 
                         <div class="column" id="info-main">
                             <div class="card">info-main</div>
@@ -134,7 +134,9 @@
                             <div class="card">info-current</div>
                         </div>
                         <div class="column" id="info-chart">
-                            <div class="card">info-chart</div>
+                            <div class="card">
+                                <canvas id="stock-canvas"></canvas>
+                            </div>
                         </div>
                         <div class="column" id="info-twitter">
                             <div class="card">info-twitter</div>
@@ -143,7 +145,7 @@
                         <p class="bd-notification is-info"></p>
                     </div>
                 </div>
-                <canvas id="stock-canvas"></canvas>
+                
             </div>
         </div>
     </div>
