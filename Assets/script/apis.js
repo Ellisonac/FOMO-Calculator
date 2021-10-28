@@ -78,7 +78,7 @@ displayText=function(results){
 
 ///event listener on submit crypto button
 function callCryptoAPI() {
-  let searchValue= optionEl.value;
+  let searchValue= cryptoSelect.value;
   let searchDate = dateEl.value;
 
   let queryDate= moment(searchDate).format().split("T")[0]
@@ -97,6 +97,8 @@ function callCryptoAPI() {
   // Current price data api url
   let currentUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets";
   
+  console.log(searchValue,coinToID[searchValue])
+
   // Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
   fetch(historicalUrl)
     .then(function(historicalResponse){
