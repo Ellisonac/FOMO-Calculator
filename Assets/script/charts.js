@@ -1,6 +1,6 @@
 var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
 var investEl = document.querySelector("#invest");
-var tickerChart; // 
+var tickerChart; //
 
 //#info-main, #info-past, #info-change, #info-current, #info-chart, #info-twitter
 
