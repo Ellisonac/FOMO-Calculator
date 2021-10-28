@@ -21,7 +21,7 @@
     <div class="banner">
         <div class="bannerContent">
             <div class="bannerText">
-                <strong>FOMO Calculator For Stocks & Crypto</strong>
+                <H1><strong>FOMO Calculator For Stocks & Crypto</strong></H1>
             </div>
         </div>
     </div>
@@ -64,7 +64,6 @@
                             <option>Nvidia</option>
                             <option>AMC</option>
                         </select>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -113,22 +112,25 @@
                         <!-- crypto submit button, will appear only for crypto. I can add the id from the submit buttons -->
                     </div>
                 </div>
-                <!-- Results output column -->
-                <div class="column" id="calculations">
-                    <div class="columns is-mobile">
-                        <div class="column">
-                            <p class="bd-notification is-info"></p>
-                        </div>
-                    </div>
-                    <canvas id="stock-canvas"></canvas>
-                </div>
             </div>
         </div>
 
-        <script src="./Assets/script/script.js"></script>
-        <script src="./Assets/script/charts.js"></script>
-        <script src="Assets/script/apis.js"></script>
-        <script src="./Assets/script/stock.js"></script>
+        <div class="column">
+            <!-- Results output column -->
+            <div class="column" id="calculations">
+                <div class="columns is-mobile">
+                    <div class="column">
+                        <p class="bd-notification is-info">Hello World</p>
+                    </div>
+                </div>
+                <canvas id="stock-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="./Assets/script/script.js"></script>
+    <script src="./Assets/script/charts.js"></script>
+    <script src="Assets/script/apis.js"></script>
+    <script src="./Assets/script/stock.js"></script>
 </body>
 
 </html>
