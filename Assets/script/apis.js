@@ -5,6 +5,27 @@ var localQueryUrl= "https://api.coinpaprika.com/v1/coins/"
 var submitCrypto = document.getElementById("submit-crypto")
 var container = document.querySelector('#results');
 var dateEl= document.getElementById("search-date")
+var investBox= document.querySelector("#invest")
+var disableSearch = submitCrypto.disabled= true
+var validDate= true
+var cryptoSelect =document.querySelector("#select-crypto")
+//function to get current price of crypto
+function currentPrice(){
+removeAllChildNodes(container)
+fetch(localQueryUrl)
+  .then(function(response){
+   return response.json()
+  }).then(function(data){
+   console.log(data)
+  displayText(data)
+  return data
+  
+      }) 
+}
+//Removing the price info if there is a previous price result present 
+function removeAllChildNodes(parent){
+parent.removeChild(parent.firstChild)
+}
 
 // Crypto drop down conversion to ID for coinpaprika call
 // Taking Coin dropdown and converting it to coin ID for query 
@@ -93,12 +114,46 @@ function callCryptoAPI() {
 
 submitCrypto.addEventListener("click",callCryptoAPI);
 
-dateEl.addEventListener("click",function(e){
-  var searchDate= dateEl.value
-  var searchDate= moment(searchDate).format()
-  var queryDate= searchDate.split("T")[0]
+dateEl.addEventListener("blur",function(){
+var today=moment().format().split("T")[0]
+var searchDate= dateEl.value
+var searchDate= moment(searchDate).format()
+var queryDate= searchDate.split("T")[0]
+if (queryDate > today){
+  validDate= false
+} 
+else(validDate=true)
+enableSearch()
+errorMessage()
 
-  // if(queryDate="Invalid date"){
-  //   return alert("Please Select a")
-  // }
 })
+//Disabling button if info is missing 
+
+//validating the value in the investment box is not a variation of 0 or null
+var investZero= true
+function investVal(){
+  if (investBox.value==""||investBox.value=="$0.00"||investBox.value=="$.00"){
+    investZero
+  = true
+  }
+  else(investZero=false)
+  enableSearch()
+}
+//function to enable/disable search button
+function enableSearch(){
+if (dateEl.value.length != "0" && investZero===false && validDate===true && cryptoSelect.value !=""){
+document.querySelector("#submit-crypto").disabled=false 
+}
+else(document.querySelector("#submit-crypto").disabled=true )
+}
+//error message for invalid date 
+function errorMessage() {
+  if (validDate== false)
+  {
+    document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter a non-future date"
+  }
+  else(document.querySelector("#error").innerHTML ="")
+}
+
+investBox.addEventListener("blur",investVal)
+cryptoSelect.addEventListener("click",enableSearch)

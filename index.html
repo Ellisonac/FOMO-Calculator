@@ -56,7 +56,8 @@
                 <div class="column">
                     <p class="bd-notification is-info"><strong>Crypto</strong></p>
                     <div class="select is-primary">
-                        <select>
+                        <select id="select-crypto">
+                            <option></option>
                             <option>Bitcoin (BTC)</option>
                             <option>Ethereum (ETH)</option>
                             <option>Tether (USDT)</option>
@@ -76,23 +77,24 @@
             <div class="column">
                 <p>Investment Date</p>
                 <input id="search-date" class="input" type="date">
+                <span id="error"></span>
             </div>
 
             <!-- Investment input -->
             <div class="column">
                 <p class="investment">Investment Amount</p>
-                <input class="input" id="invest" type="text" placeholder="Money">
+                <input class="input" id="invest" type="" placeholder="Money">
             </div>
 
             <div class="column">
                 <button class="button is-primary" id="submit-stock">
                     Submit 📈
                 </button>
-                <button class="button is-primary" id="submit-crypto">
+                <button class="button is-primary" id="submit-crypto"  >
                     Submit 🪙
                 </button>
             </div>
-            <div id="results" class="container">Current Price</div>
+            <div id="results" class="container"></div>
         </div>
 
         <!-- Still need to add a INPUT FORM -->
