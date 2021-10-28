@@ -19,3 +19,33 @@ body {
     margin-right: 0;
     margin-top: 0;
 }
+
+.otherQuestions {
+    display: none;
+}
+
+.crypto {
+    display: none;
+}
+
+.stocks{
+    display: none;
+}
+
+.stockBtn {
+    display:block;
+}
+
+.cryptoBtn {
+    display:block;
+}
+
+.cryptoCalBtn {
+    display:none;
+}
+
+.stockCalBtn {
+    display:none;
+}
+
+
