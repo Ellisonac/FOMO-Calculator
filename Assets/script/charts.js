@@ -79,7 +79,8 @@ function displayTicker(values,name,type) {
           type: 'time',
           time: {
             unit: tickUnits,
-          }
+          },
+
           // ticks: {
           //   // For a category axis, the val is the index so the lookup via getLabelForValue is needed
           //   callback: function(val, index) {
@@ -88,6 +89,24 @@ function displayTicker(values,name,type) {
           //   },
           //   color: 'red',
           // }
+
+        },
+        yAxes: {
+          ticks: {
+            beginAtZero: true,
+            // Include a dollar sign in the ticks
+            callback: function(value, index, values) {
+              // format decimal places of y-ticks based on maximum value of whole output
+              let maxValue = Math.max(...values.map(value => value.value));
+              if (maxValue > 99.99) {
+                return '$' + value.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              } else if (maxValue > .01) {
+                return '$' + value.toFixed(2)
+              } else {
+                return '$' + value;
+              }
+            }
+          }
         }
       }
     },
@@ -101,6 +120,8 @@ function displayTicker(values,name,type) {
   );
 
 }
+
+
 
 // Calculating potential earnings and adding to ui
 function displayCalcs(values,currentPrice,name) {
@@ -125,8 +146,6 @@ function displayCalcs(values,currentPrice,name) {
 
 
   // Displaying to infoPast: Query date and value 
-  
-
   let pastHeader = document.createElement("h2");
   pastHeader.textContent = "Then";
   pastHeader.classList = "title is-4 card-el";
