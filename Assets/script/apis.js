@@ -163,4 +163,6 @@ function errorMessage() {
 }
 selectStock.addEventListener("blur",enableSearch)
 investBox.addEventListener("keydown",investVal)
+investBox.addEventListener("keydown",enableSearch)
+investBox.addEventListener("blur",enableSearch)
 cryptoSelect.addEventListener("blur",enableSearch)
