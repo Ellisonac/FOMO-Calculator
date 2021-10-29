@@ -45,6 +45,17 @@ function displayTicker(values,name,type) {
   let times = values.times;
   let prices = values.prices;
 
+  let timeSpan = times[times.length-1]
+  let tickUnits;
+
+  if (times[times.length-1].diff(times[0],'years') >= 3) {
+    tickUnits = "year";
+  } else if (times[times.length-1].diff(times[0],'months') >= 3) {
+    tickUnits = "month";
+  } else {
+    tickUnits = "day";
+  }
+
   // Chart.js implemented plots
   let chartData = {
     labels: times,
@@ -61,8 +72,28 @@ function displayTicker(values,name,type) {
   let config = {
     type: 'line',
     data: chartData,
-    options: {}
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: tickUnits,
+          }
+          // ticks: {
+          //   // For a category axis, the val is the index so the lookup via getLabelForValue is needed
+          //   callback: function(val, index) {
+          //     // Hide the label of every 2nd dataset
+          //     return index % 2 === 0 ? this.getLabelForValue(val) : '';
+          //   },
+          //   color: 'red',
+          // }
+        }
+      }
+    },
   };
+
+  
 
   tickerChart = new Chart(
     document.querySelector("#stock-canvas"),
@@ -84,7 +115,7 @@ function displayCalcs(values,currentPrice,name) {
 
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
-  let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY');
+  let queryDate = moment(document.getElementById("search-date").value).format('MMMM Do, YYYY');
 
   //Removing children from info cards
   clearCards();
@@ -144,7 +175,7 @@ function displayCalcs(values,currentPrice,name) {
   currentHeader.classList = "title is-4 card-el";
 
   let currentDate = document.createElement("p");
-  currentDate.textContent = moment().format('MMMM DD, YYYY');
+  currentDate.textContent = moment().format('MMMM Do, YYYY');
   currentDate.classList = "card-date card-el";
 
   let currentBody = document.createElement("h3");
@@ -198,10 +229,10 @@ function extractData(data,currentPrice,type) {
 
   if (type == 'coin') {
     data.forEach((entry) => {
-      times.push(moment(entry.timestamp,'YYYY-MM-DDThh:mm:ssZ').format('MMMM DD, YYYY'));
+      times.push(moment(entry.timestamp,'YYYY-MM-DDThh:mm:ssZ'));
       prices.push(entry.price);
     })
-    times.push(moment().format('MMMM DD, YYYY'))
+    times.push(moment())
     prices.push(currentPrice)
 
   } else if (type == 'stock') {
@@ -210,7 +241,7 @@ function extractData(data,currentPrice,type) {
       prices.push(entry);
     })
     data.chart.result[0].timestamp.forEach((entry) => {
-      times.push(moment.unix(entry).format('MMMM DD, YYYY'));
+      times.push(moment.unix(entry));
     })
   }
 
