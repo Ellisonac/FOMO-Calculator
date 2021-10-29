@@ -73,3 +73,21 @@ body {
 .title {
     margin-bottom: 0px !important;
 }
+
+#info-main {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+#sub-info div {
+    height: 170px;
+}
+
+#sub-info div .card {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+
+}

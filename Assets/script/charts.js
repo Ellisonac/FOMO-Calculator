@@ -84,9 +84,10 @@ function displayCalcs(values,currentPrice,name) {
 
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
-  let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY')
+  let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY');
 
-  clearCards()
+  //Removing children from info cards
+  clearCards();
 
   // Displaying to infoMain: primary FOMO calculation and result sentence
   infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
@@ -94,17 +95,18 @@ function displayCalcs(values,currentPrice,name) {
 
   // Displaying to infoPast: Query date and value 
   
+
   let pastHeader = document.createElement("h2");
   pastHeader.textContent = "Then";
-  pastHeader.classList = "title is-4";
+  pastHeader.classList = "title is-4 card-el";
 
   let pastDate = document.createElement("p");
   pastDate.textContent = queryDate;
-  pastDate.classList = "card-date";
+  pastDate.classList = "card-date card-el";
 
   let pastBody = document.createElement("h3");
   pastBody.textContent = formatPrice(prices[0]);
-  pastBody.classList = "title is-3";
+  pastBody.classList = "title is-3 card-el";
 
   infoPast.append(pastHeader)
   infoPast.append(pastDate)
@@ -114,16 +116,16 @@ function displayCalcs(values,currentPrice,name) {
   // Displaying to infoChange: change in value, percent change, add red/green arrow?
   let changeHeader = document.createElement("h2");
   changeHeader.textContent = "Change";
-  changeHeader.classList = "title is-4";
+  changeHeader.classList = "title is-4 card-el";
 
   let changeValue = document.createElement("h3");
   changeValue.textContent = formatPrice(currentPrice-prices[0]);
-  changeValue.classList = "title is-3";
+  changeValue.classList = "title is-3 card-el";
 
   let changePercent = document.createElement("h3");
   let pctChange = (100*(currentPrice-prices[0])/prices[0]).toFixed(3);
   changePercent.textContent = pctChange + "%";
-  changePercent.classList = "title is-3";
+  changePercent.classList = "title is-3 card-el";
   if (currentPrice > prices[0]) {
     changeValue.setAttribute("style","color:green")
     changePercent.setAttribute("style","color:green")
@@ -136,26 +138,30 @@ function displayCalcs(values,currentPrice,name) {
   infoChange.append(changeValue)
   infoChange.append(changePercent)
 
+  // Displaying to infoCurrent
+  let currentHeader = document.createElement("h2");
+  currentHeader.textContent = "Now";
+  currentHeader.classList = "title is-4 card-el";
 
+  let currentDate = document.createElement("p");
+  currentDate.textContent = moment().format('MMMM DD, YYYY');
+  currentDate.classList = "card-date card-el";
 
-  // Display main FOMO calculation
-  let mainResult = document.createElement("h2");
+  let currentBody = document.createElement("h3");
+  currentBody.textContent = formatPrice(currentPrice);
+  currentBody.classList = "title is-3 card-el";
 
-  
+  infoCurrent.append(currentHeader)
+  infoCurrent.append(currentDate)
+  infoCurrent.append(currentBody)
 
-  infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
-
-  calcsEl.append(mainResult);
-
-  calcsEl.append(document.createElement("br"));
-
-  // Calculate best time to sell
+  // Calculate best time to sell || currently not used
   let statsMax = document.createElement("p");
   let maxIndex = prices.indexOf(Math.max(...prices));
 
   statsMax.innerHTML = `The best time to sell ${name} was on ${times[maxIndex]} at ${formatPrice(prices[maxIndex])}`
 
-  infoChange.append(statsMax);
+  // infoChange.append(statsMax);
 
   // TODO add a reset to rehide results?
   document.querySelector("#calculation-container").setAttribute("style","display:block");
