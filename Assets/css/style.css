@@ -2,8 +2,12 @@ body {
     margin: 0;
 }
 
+:root {
+    --maincolor: hsl(171, 100%, 41%);
+}
+
 .banner {
-    background: hsl(171, 100%, 41%);
+    background: var(--maincolor);
 }
 
 .bannerContent {
@@ -48,4 +52,42 @@ body {
     display:none;
 }
 
+.is-inverted {
+    border: 1px solid var(--maincolor) !important;
+}
 
+.card {
+    padding: 1%;
+
+}
+
+#calculation-container {
+    display:none;
+}
+
+.card-date {
+    font-size: .75rem;
+    margin-bottom: 5px;
+}
+
+.title {
+    margin-bottom: 0px !important;
+}
+
+#info-main {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+#sub-info div {
+    height: 170px;
+}
+
+#sub-info div .card {
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+
+}

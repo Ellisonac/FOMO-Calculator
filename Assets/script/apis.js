@@ -137,7 +137,8 @@ errorMessage()
 //validating the value in the investment box is not a variation of 0 or null
 var investZero= true
 function investVal(){
-  if (investBox.value==""||investBox.value=="$0.00"||investBox.value=="$.00"){
+  let investNumber = Number(investBox.value.replace(/[^0-9\.-]+/g,""))
+  if (investBox.value==""||investNumber==0){
     investZero
   = true
   }
@@ -150,7 +151,7 @@ if (dateEl.value.length != "0" && investZero===false && validDate===true && (cry
 document.querySelector("#submit-crypto").disabled=false 
 document.querySelector("#submit-stock").disabled=false 
 }
-else(document.querySelector("#submit-crypto").disabled=true, document.querySelector("#submit-stock").disabled=true)
+else {document.querySelector("#submit-crypto").disabled=true, document.querySelector("#submit-stock").disabled=true}
 console.log(dateEl.value.length)
 }
 //error message for invalid date 
@@ -162,6 +163,7 @@ function errorMessage() {
   else(document.querySelector("#error").innerHTML ="")
 }
 selectStock.addEventListener("blur",enableSearch)
-investBox.addEventListener("blur",investVal)
+investBox.addEventListener("keyup",investVal)
+investBox.addEventListener("keydown",enableSearch)
+investBox.addEventListener("blur",enableSearch)
 cryptoSelect.addEventListener("blur",enableSearch)
-

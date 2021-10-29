@@ -2,6 +2,16 @@ var calcsEl = document.querySelector("#calculations"); // Main container for cha
 var investEl = document.querySelector("#invest");
 var tickerChart; //
 
+// New Card elements
+var infoMain = document.querySelector("#info-main div");
+var infoPast = document.querySelector("#info-past div");
+var infoChange = document.querySelector("#info-change div");
+var infoCurrent = document.querySelector("#info-current div");
+var infoChart = document.querySelector("#info-chart div");
+var infoTwitter = document.querySelector("#info-twitter div");
+
+//#info-main, #info-past, #info-change, #info-current, #info-chart, #info-twitter
+
 // Wrapper function to accept api call data and run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
 
@@ -35,6 +45,17 @@ function displayTicker(values,name,type) {
   let times = values.times;
   let prices = values.prices;
 
+  let timeSpan = times[times.length-1]
+  let tickUnits;
+
+  if (times[times.length-1].diff(times[0],'years') >= 3) {
+    tickUnits = "year";
+  } else if (times[times.length-1].diff(times[0],'months') >= 3) {
+    tickUnits = "month";
+  } else {
+    tickUnits = "day";
+  }
+
   // Chart.js implemented plots
   let chartData = {
     labels: times,
@@ -51,8 +72,37 @@ function displayTicker(values,name,type) {
   let config = {
     type: 'line',
     data: chartData,
-    options: {}
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: tickUnits,
+          },
+        },
+        yAxes: {
+          ticks: {
+            beginAtZero: true,
+            // Include a dollar sign in the ticks
+            callback: function(value, index, values) {
+              // format decimal places of y-ticks based on maximum value of whole output
+              let maxValue = Math.max(...values.map(value => value.value));
+              if (maxValue > 99.99) {
+                return '$' + value.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+              } else if (maxValue > .01) {
+                return '$' + value.toFixed(2)
+              } else {
+                return '$' + value;
+              }
+            }
+          }
+        }
+      }
+    },
   };
+
+  
 
   tickerChart = new Chart(
     document.querySelector("#stock-canvas"),
@@ -61,6 +111,8 @@ function displayTicker(values,name,type) {
 
 }
 
+
+
 // Calculating potential earnings and adding to ui
 function displayCalcs(values,currentPrice,name) {
 
@@ -68,30 +120,91 @@ function displayCalcs(values,currentPrice,name) {
   let times = values.times;
   let prices = values.prices;
 
-  
+  // Calculating the final investment value
   let investAmount = extractInvestment(); 
   let result = (investAmount) * (currentPrice/prices[0]);
 
-  // Display main FOMO calculation
-  let mainResult = document.createElement("h2");
-
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
-  let queryDate = moment(document.getElementById("search-date").value).format('MMMM DD, YYYY')
+  let queryDate = moment(document.getElementById("search-date").value).format('MMMM Do, YYYY');
 
-  mainResult.innerHTML = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`
+  //Removing children from info cards
+  clearCards();
 
-  calcsEl.append(mainResult);
+  // Displaying to infoMain: primary FOMO calculation and result sentence
+  infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
 
-  calcsEl.append(document.createElement("br"));
 
-  // Calculate best time to sell
+  // Displaying to infoPast: Query date and value 
+  let pastHeader = document.createElement("h2");
+  pastHeader.textContent = "Then";
+  pastHeader.classList = "title is-4 card-el";
+
+  let pastDate = document.createElement("p");
+  pastDate.textContent = queryDate;
+  pastDate.classList = "card-date card-el";
+
+  let pastBody = document.createElement("h3");
+  pastBody.textContent = formatPrice(prices[0]);
+  pastBody.classList = "title is-3 card-el";
+
+  infoPast.append(pastHeader)
+  infoPast.append(pastDate)
+  infoPast.append(pastBody)
+
+
+  // Displaying to infoChange: change in value, percent change, add red/green arrow?
+  let changeHeader = document.createElement("h2");
+  changeHeader.textContent = "Change";
+  changeHeader.classList = "title is-4 card-el";
+
+  let changeValue = document.createElement("h3");
+  changeValue.textContent = formatPrice(currentPrice-prices[0]);
+  changeValue.classList = "title is-3 card-el";
+
+  let changePercent = document.createElement("h3");
+  let pctChange = (100*(currentPrice-prices[0])/prices[0]).toFixed(3);
+  changePercent.textContent = pctChange + "%";
+  changePercent.classList = "title is-3 card-el";
+  if (currentPrice > prices[0]) {
+    changeValue.setAttribute("style","color:green")
+    changePercent.setAttribute("style","color:green")
+  } else if (currentPrice < prices[0]) {
+    changeValue.setAttribute("style","color:red")
+    changePercent.setAttribute("style","color:red")
+  }
+
+  infoChange.append(changeHeader)
+  infoChange.append(changeValue)
+  infoChange.append(changePercent)
+
+  // Displaying to infoCurrent
+  let currentHeader = document.createElement("h2");
+  currentHeader.textContent = "Now";
+  currentHeader.classList = "title is-4 card-el";
+
+  let currentDate = document.createElement("p");
+  currentDate.textContent = moment().format('MMMM Do, YYYY');
+  currentDate.classList = "card-date card-el";
+
+  let currentBody = document.createElement("h3");
+  currentBody.textContent = formatPrice(currentPrice);
+  currentBody.classList = "title is-3 card-el";
+
+  infoCurrent.append(currentHeader)
+  infoCurrent.append(currentDate)
+  infoCurrent.append(currentBody)
+
+  // Calculate best time to sell || currently not used
   let statsMax = document.createElement("p");
   let maxIndex = prices.indexOf(Math.max(...prices));
 
   statsMax.innerHTML = `The best time to sell ${name} was on ${times[maxIndex]} at ${formatPrice(prices[maxIndex])}`
 
-  calcsEl.append(statsMax);
+  // infoChange.append(statsMax);
+
+  // TODO add a reset to rehide results?
+  document.querySelector("#calculation-container").setAttribute("style","display:block");
 
 }
 
@@ -125,10 +238,10 @@ function extractData(data,currentPrice,type) {
 
   if (type == 'coin') {
     data.forEach((entry) => {
-      times.push(moment(entry.timestamp,'YYYY-MM-DDThh:mm:ssZ').format('MMMM DD, YYYY'));
+      times.push(moment(entry.timestamp,'YYYY-MM-DDThh:mm:ssZ'));
       prices.push(entry.price);
     })
-    times.push(moment().format('MMMM DD, YYYY'))
+    times.push(moment())
     prices.push(currentPrice)
 
   } else if (type == 'stock') {
@@ -137,7 +250,7 @@ function extractData(data,currentPrice,type) {
       prices.push(entry);
     })
     data.chart.result[0].timestamp.forEach((entry) => {
-      times.push(moment.unix(entry).format('MMMM DD, YYYY'));
+      times.push(moment.unix(entry));
     })
   }
 
@@ -146,8 +259,15 @@ function extractData(data,currentPrice,type) {
 
 // Convert price string or number to formatted string
 function formatPrice(price) {
+  let sign = "" // carry the minus sign to end if present
   if (typeof price !== "string") {
-    s = String(price.toFixed(2));
+    if (price >= 0) {
+      s = String(price.toFixed(2));
+    } else {
+      s = String(Math.abs(price.toFixed(2)));
+      sign = "-"
+    }
+   
   } else {
     s = price;
   }
@@ -156,7 +276,7 @@ function formatPrice(price) {
   }
 
   // Add appropriate commas and formatting using regex a la https://www.codegrepper.com/code-examples/javascript/javascript+format+currency+with+commas
-  return s.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return sign + s.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
 // Extract investment value from formatted string
@@ -164,6 +284,16 @@ function extractInvestment() {
   let investString = investEl.value;
 
   return Number(investString.replace(/[^0-9\.-]+/g,""))
+}
+
+// Removing children from all output data cards
+function clearCards() {
+  let cards = [infoMain,infoPast,infoChange,infoCurrent,infoTwitter];
+  cards.forEach((card) => {
+    while (card.firstChild) {
+      card.removeChild(card.firstChild);
+    }
+  })
 }
 
 // Start of code from Robby-api branch
