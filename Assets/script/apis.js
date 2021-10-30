@@ -111,7 +111,7 @@ function callCryptoAPI() {
         .then(function(response){
           return response.json()
         }).then(function(data){
-          calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin');
+          calcAndChart(searchValue,data[0].quotes.USD.price,historical,'coin');
         }) 
     })
 }

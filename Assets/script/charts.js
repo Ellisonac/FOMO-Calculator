@@ -126,8 +126,9 @@ function displayCalcs(values,currentPrice,name) {
   infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${verb} ${formatPrice(Math.abs(result))}.`;
 
   // Displaying to infoPast: Query date and value 
+  let tickerID = name.split(' ')[1].slice(1,-1)
   let pastHeader = document.createElement("h2");
-  pastHeader.textContent = "Then";
+  pastHeader.textContent = `${tickerID} Then`;
   pastHeader.classList = "card-title";
 
   let pastDate = document.createElement("p");
@@ -173,7 +174,7 @@ function displayCalcs(values,currentPrice,name) {
 
   // Displaying to infoCurrent
   let currentHeader = document.createElement("h2");
-  currentHeader.textContent = "Now";
+  currentHeader.textContent = `${tickerID} Now`;
   currentHeader.classList = "card-title";
 
   let currentDate = document.createElement("p");
