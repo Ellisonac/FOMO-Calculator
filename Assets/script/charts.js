@@ -38,7 +38,7 @@ function displayTicker(values,name,type) {
   let times = values.times;
   let prices = values.prices;
 
-  let timeSpan = times[times.length-1]
+  // let timeSpan = times[times.length-1]
   let tickUnits;
 
   if (times[times.length-1].diff(times[0],'years') >= 3) {
@@ -115,6 +115,7 @@ function displayTicker(values,name,type) {
 
 }
 
+
 // Calculating potential earnings and adding to output cards
 function displayCalcs(values,currentPrice,name) {
 
@@ -123,6 +124,7 @@ function displayCalcs(values,currentPrice,name) {
   let prices = values.prices;
 
   // Calculating the final investment value
+  // Perhaps change to price difference (You would have made $__)
   let investAmount = extractInvestment(); 
   let result = (investAmount) * (currentPrice/prices[0]) - investAmount;
 
