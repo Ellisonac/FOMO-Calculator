@@ -69,31 +69,43 @@ body {
     display:none;
 }
 
-.card-date {
-    font-size: .75rem;
-    margin-bottom: 5px;
-}
-
-.title {
-    margin-bottom: 0px !important;
-}
-
-#info-main {
-    font-size: 1.3rem;
-    font-weight: bold;
-}
-
 #sub-info div {
     height: 170px;
 }
 
 #sub-info div .card {
-    display:flex;
+    position: relative;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-content: center;
     height: 100%;
+    padding-left: 0;
+}
 
+.card-title {
+    position: absolute;
+    top: 0;
+    font-size: 1.2rem;
+    margin-bottom: 0px !important;
+    width: 100%;
+    background-color: var(--maincolor);
+    height: 2rem;
+    border-radius: .25rem .25rem 0 0;
+}
+
+.card-date {
+    font-size: .75rem;
+    margin-top: 10px;
+}
+
+.card-body {
+    font-size: 1.5rem;
+}
+
+#info-main {
+    font-size: 1.3rem;
+    font-weight: bold;
 }
 
 .on-hover:hover{

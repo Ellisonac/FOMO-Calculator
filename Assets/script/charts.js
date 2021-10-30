@@ -111,7 +111,9 @@ function displayCalcs(values,currentPrice,name) {
 
   // Calculating the final investment value
   let investAmount = extractInvestment(); 
-  let result = (investAmount) * (currentPrice/prices[0]);
+  let result = (investAmount) * (currentPrice/prices[0]) - investAmount;
+
+  verb = (result >= 0) ? "made" : "lost";
 
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
@@ -121,38 +123,39 @@ function displayCalcs(values,currentPrice,name) {
   clearCards();
 
   // Displaying to infoMain: primary FOMO calculation and result sentence
-  infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
+  infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${verb} ${formatPrice(Math.abs(result))}.`;
 
   // Displaying to infoPast: Query date and value 
   let pastHeader = document.createElement("h2");
   pastHeader.textContent = "Then";
-  pastHeader.classList = "title is-4 card-el";
+  pastHeader.classList = "card-title";
 
   let pastDate = document.createElement("p");
   pastDate.textContent = queryDate;
-  pastDate.classList = "card-date card-el";
+  pastDate.classList = "card-date";
 
   let pastBody = document.createElement("h3");
   pastBody.textContent = formatPrice(prices[0]);
-  pastBody.classList = "title is-3 card-el";
+  pastBody.classList = "card-body";
 
   infoPast.append(pastHeader)
   infoPast.append(pastDate)
+  infoPast.append(document.createElement("br"))
   infoPast.append(pastBody)
 
   // Displaying to infoChange: change in value, percent change, add red/green arrow?
   let changeHeader = document.createElement("h2");
   changeHeader.textContent = "Change";
-  changeHeader.classList = "title is-4 card-el";
+  changeHeader.classList = "card-title";
 
   let changeValue = document.createElement("h3");
   changeValue.textContent = formatPrice(currentPrice-prices[0]);
-  changeValue.classList = "title is-3 card-el";
+  changeValue.classList = "card-body";
 
   let changePercent = document.createElement("h3");
   let pctChange = (100*(currentPrice-prices[0])/prices[0]).toFixed(3);
   changePercent.textContent = pctChange + "%";
-  changePercent.classList = "title is-3 card-el";
+  changePercent.classList = "card-body";
 
   // Set color of text to green or red if positive/negative
   if (currentPrice > prices[0]) {
@@ -164,24 +167,26 @@ function displayCalcs(values,currentPrice,name) {
   }
 
   infoChange.append(changeHeader)
+  infoChange.append(document.createElement("br"))
   infoChange.append(changeValue)
   infoChange.append(changePercent)
 
   // Displaying to infoCurrent
   let currentHeader = document.createElement("h2");
   currentHeader.textContent = "Now";
-  currentHeader.classList = "title is-4 card-el";
+  currentHeader.classList = "card-title";
 
   let currentDate = document.createElement("p");
   currentDate.textContent = moment().format('MMMM Do, YYYY');
-  currentDate.classList = "card-date card-el";
+  currentDate.classList = "card-date";
 
   let currentBody = document.createElement("h3");
   currentBody.textContent = formatPrice(currentPrice);
-  currentBody.classList = "title is-3 card-el";
+  currentBody.classList = "card-body";
 
   infoCurrent.append(currentHeader)
   infoCurrent.append(currentDate)
+  infoCurrent.append(document.createElement("br"))
   infoCurrent.append(currentBody)
 
   // Display calculation elements after data has been first populated
