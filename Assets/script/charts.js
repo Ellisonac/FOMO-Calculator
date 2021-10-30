@@ -1,16 +1,13 @@
-var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
 var investEl = document.querySelector("#invest");
-var tickerChart; //
+var tickerChart; // Main chart for historical price data
 
-// New Card elements
+// Card elements for output data
 var infoMain = document.querySelector("#info-main div");
 var infoPast = document.querySelector("#info-past div");
 var infoChange = document.querySelector("#info-change div");
 var infoCurrent = document.querySelector("#info-current div");
 var infoChart = document.querySelector("#info-chart div");
 var infoTwitter = document.querySelector("#info-twitter div");
-
-//#info-main, #info-past, #info-change, #info-current, #info-chart, #info-twitter
 
 // Wrapper function to accept api call data and run displayTicker and displayCalcs
 function calcAndChart(name,currentPrice,historicalData,type) {
@@ -23,14 +20,10 @@ function calcAndChart(name,currentPrice,historicalData,type) {
     currentPrice = values.prices[values.prices.length-1]
   }
 
-  // Remove duplicate output, will be removed as UI adds cards for output
-  if (calcsEl.children.length > 2) {
-    while (calcsEl.children[2]) {
-      calcsEl.removeChild(calcsEl.children[2])
-    }
-  }
-
+  // Create and display historical price chart function call
   displayTicker(values,name,type);
+
+  // Calculate and populate output cards function call
   displayCalcs(values,currentPrice,name);
 }
 
@@ -67,8 +60,7 @@ function displayTicker(values,name,type) {
     }]
   };
   
-  // TODO, improve chart look
-  // Ideas, add cumulative area-type light shading of red and green?
+  // Chart configuration data
   let config = {
     type: 'line',
     data: chartData,
@@ -85,8 +77,8 @@ function displayTicker(values,name,type) {
           ticks: {
             beginAtZero: true,
             // Include a dollar sign in the ticks
+            // format decimal places of y-ticks based on maximum value of whole output
             callback: function(value, index, values) {
-              // format decimal places of y-ticks based on maximum value of whole output
               let maxValue = Math.max(...values.map(value => value.value));
               if (maxValue > 99.99) {
                 return '$' + value.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -102,8 +94,7 @@ function displayTicker(values,name,type) {
     },
   };
 
-  
-
+  // Create chart
   tickerChart = new Chart(
     document.querySelector("#stock-canvas"),
     config
@@ -111,9 +102,7 @@ function displayTicker(values,name,type) {
 
 }
 
-
-
-// Calculating potential earnings and adding to ui
+// Calculating potential earnings and adding to output cards
 function displayCalcs(values,currentPrice,name) {
 
   // pull list of times and prices from extracted data
@@ -128,12 +117,11 @@ function displayCalcs(values,currentPrice,name) {
   // TODO: functionality for if a user selects a date before the coin was available
   let queryDate = moment(document.getElementById("search-date").value).format('MMMM Do, YYYY');
 
-  //Removing children from info cards
+  // Removing children from info cards
   clearCards();
 
   // Displaying to infoMain: primary FOMO calculation and result sentence
   infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
-
 
   // Displaying to infoPast: Query date and value 
   let pastHeader = document.createElement("h2");
@@ -152,7 +140,6 @@ function displayCalcs(values,currentPrice,name) {
   infoPast.append(pastDate)
   infoPast.append(pastBody)
 
-
   // Displaying to infoChange: change in value, percent change, add red/green arrow?
   let changeHeader = document.createElement("h2");
   changeHeader.textContent = "Change";
@@ -166,6 +153,8 @@ function displayCalcs(values,currentPrice,name) {
   let pctChange = (100*(currentPrice-prices[0])/prices[0]).toFixed(3);
   changePercent.textContent = pctChange + "%";
   changePercent.classList = "title is-3 card-el";
+
+  // Set color of text to green or red if positive/negative
   if (currentPrice > prices[0]) {
     changeValue.setAttribute("style","color:green")
     changePercent.setAttribute("style","color:green")
@@ -195,15 +184,7 @@ function displayCalcs(values,currentPrice,name) {
   infoCurrent.append(currentDate)
   infoCurrent.append(currentBody)
 
-  // Calculate best time to sell || currently not used
-  let statsMax = document.createElement("p");
-  let maxIndex = prices.indexOf(Math.max(...prices));
-
-  statsMax.innerHTML = `The best time to sell ${name} was on ${times[maxIndex]} at ${formatPrice(prices[maxIndex])}`
-
-  // infoChange.append(statsMax);
-
-  // TODO add a reset to rehide results?
+  // Display calculation elements after data has been first populated
   document.querySelector("#calculation-container").setAttribute("style","display:block");
 
 }
@@ -296,75 +277,6 @@ function clearCards() {
   })
 }
 
-// Start of code from Robby-api branch
-$("input[id='invest']").on({
-  keyup: function() {
-    formatCurrency($(this));
-  },
-  blur: function() { 
-    formatCurrency($(this), "blur");
-  }
-});
-
-function formatNumber(n) {
-  return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-}
-
-function formatCurrency(input, blur) {
-  // appends $ to value, validates decimal side
-  // and puts cursor back in right position.
-
-  var input_val = input.val();
-
-  if (input_val === "") { return; }
-
-  var original_len = input_val.length;
-
-  var caret_pos = input.prop("selectionStart");
-    
-  // check for decimal
-  if (input_val.indexOf(".") >= 0) {
-
-  //prevents multiple decimal places
-    var decimal_pos = input_val.indexOf(".");
-
-  // split number by decimal point
-    var left_side = input_val.substring(0, decimal_pos);
-    var right_side = input_val.substring(decimal_pos);
-
-    // add commas to left side of number
-    left_side = formatNumber(left_side);
-
-    // validate right side
-    right_side = formatNumber(right_side);
-      
-    // On blur make sure 2 numbers after decimal
-    if (blur === "blur") {
-      right_side += "00";
-    }
-      
-    // Limit decimal to only 2 digits
-    right_side = right_side.substring(0, 2);
-
-    // join number by .
-    input_val = "$" + left_side + "." + right_side;
-
-  } else {
-    // no decimal entered
-    // add commas to number
-    // remove all non-digits
-    input_val = formatNumber(input_val);
-    input_val = "$" + input_val;
-    
-    // final formatting
-    if (blur === "blur") {
-      input_val += ".00";
-    }
-  }
-
-  // send updated string to input
-  input.val(input_val);
-
 //Convert input to currecny as user inputs values
 $("input[id='invest']").on({
   keyup: function() {
@@ -436,4 +348,4 @@ input.val(input_val);
 var updated_len = input_val.length;
 caret_pos = updated_len - original_len + caret_pos;
 input[0].setSelectionRange(caret_pos, caret_pos);
-}}
+}
