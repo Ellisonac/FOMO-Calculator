@@ -49,6 +49,9 @@ function displayTicker(values,name,type) {
     tickUnits = "day";
   }
 
+  // Generate Chart Title
+  let chartTitle = `${name} Price History`;
+
   // Chart.js implemented plots
   let chartData = {
     labels: times,
@@ -66,6 +69,16 @@ function displayTicker(values,name,type) {
     data: chartData,
     options: {
       responsive: true,
+      
+      plugins: {
+        title: {
+          display: true,
+          text: chartTitle
+        },
+        legend: {
+          display: false
+        },
+      },
       scales: {
         x: {
           type: 'time',
