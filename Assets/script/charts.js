@@ -276,8 +276,10 @@ function extractInvestment() {
 function clearCards() {
   let cards = [infoMain,infoPast,infoChange,infoCurrent,infoTwitter];
   cards.forEach((card) => {
-    while (card.firstChild) {
-      card.removeChild(card.firstChild);
+    if (card) {
+      while (card.firstChild) {
+        card.removeChild(card.firstChild);
+      }
     }
   })
 }

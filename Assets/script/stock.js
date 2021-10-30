@@ -1,16 +1,16 @@
 // historical-data
 var submitStock = document.getElementById("submit-stock");
 var stockTicker = {
-  Amazon: "AMZN",
-  Netflix: "NFLX",
-  Google: "GOOG",
-  Tesla: "TSLA",
-  Apple: "AAPL",
-  Intel: "INTC",
-  Ford: "F",
-  Gamestop: "GME",
-  Nvidia: "NVDA",
-  AMC: "AMC",
+  "Amazon (AMZN)": "AMZN",
+  "Netflix (NFLX)": "NFLX",
+  "Google (GOOG)": "GOOG",
+  "Tesla (TSLA)": "TSLA",
+  "Apple (AAPL)": "AAPL",
+  "Intel (INTC)": "INTC",
+  "Ford (F)": "F",
+  "Gamestop (GME)": "GME",
+  "Nvidia (NVDA)": "NVDA",
+  "AMC (AMC)": "AMC",
 };
 var stockSelect = document.querySelector("#select-stock");
 
