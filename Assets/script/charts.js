@@ -1,4 +1,4 @@
-var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
+//var calcsEl = document.querySelector("#calculations"); // Main container for chart and calculations
 var investEl = document.querySelector("#invest");
 var tickerChart; //
 
@@ -24,6 +24,7 @@ function calcAndChart(name,currentPrice,historicalData,type) {
   }
 
   // Remove duplicate output, will be removed as UI adds cards for output
+  // Can delete
   if (calcsEl.children.length > 2) {
     while (calcsEl.children[2]) {
       calcsEl.removeChild(calcsEl.children[2])
@@ -45,7 +46,7 @@ function displayTicker(values,name,type) {
   let times = values.times;
   let prices = values.prices;
 
-  let timeSpan = times[times.length-1]
+  // let timeSpan = times[times.length-1]
   let tickUnits;
 
   if (times[times.length-1].diff(times[0],'years') >= 3) {
@@ -111,8 +112,6 @@ function displayTicker(values,name,type) {
 
 }
 
-
-
 // Calculating potential earnings and adding to ui
 function displayCalcs(values,currentPrice,name) {
 
@@ -121,8 +120,9 @@ function displayCalcs(values,currentPrice,name) {
   let prices = values.prices;
 
   // Calculating the final investment value
+  // Perhaps change to price difference (You would have made $__)
   let investAmount = extractInvestment(); 
-  let result = (investAmount) * (currentPrice/prices[0]);
+  let result = (investAmount) * (currentPrice/prices[0]) - investAmount;
 
   // Historical day is not precisely as input, workaround: assume first historic point and user input date values are similar
   // TODO: functionality for if a user selects a date before the coin was available
@@ -133,7 +133,6 @@ function displayCalcs(values,currentPrice,name) {
 
   // Displaying to infoMain: primary FOMO calculation and result sentence
   infoMain.textContent = `If you had bought ${formatPrice(investAmount)} of ${name} on ${queryDate}, you would have ${formatPrice(result)}.`;
-
 
   // Displaying to infoPast: Query date and value 
   let pastHeader = document.createElement("h2");
