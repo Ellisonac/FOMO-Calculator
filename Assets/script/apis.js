@@ -19,7 +19,6 @@ fetch(localQueryUrl)
   .then(function(response){
    return response.json()
   }).then(function(data){
-   console.log(data)
   displayText(data)
   return data
   
@@ -53,7 +52,6 @@ function currentPrice(){
     .then(function(response){
       return response.json()
     }).then(function(data){
-      console.log(data)
       displayText(data)
       return data
     }) 
@@ -99,8 +97,6 @@ function callCryptoAPI() {
 
   // Current price data api url
   let currentUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets";
-  
-  console.log(searchValue,coinToID[searchValue])
 
   // Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
   fetch(historicalUrl)
@@ -152,7 +148,6 @@ document.querySelector("#submit-crypto").disabled=false
 document.querySelector("#submit-stock").disabled=false 
 }
 else {document.querySelector("#submit-crypto").disabled=true, document.querySelector("#submit-stock").disabled=true}
-console.log(dateEl.value.length)
 }
 //error message for invalid date 
 function errorMessage() {
