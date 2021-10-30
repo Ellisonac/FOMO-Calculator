@@ -95,14 +95,9 @@ body {
     height: 100%;
 
 }
-#info-past:hover{
-    transform: scale(1.125);
-    
-}
-#info-current:hover{
-    transform: scale(1.125);
 
-}
-#info-change:hover{
+.on-hover:hover{
     transform: scale(1.125);
+    box-shadow: 5px 5px 7px darkgray;
+    
 }
