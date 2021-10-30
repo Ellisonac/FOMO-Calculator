@@ -19,7 +19,6 @@ fetch(localQueryUrl)
   .then(function(response){
    return response.json()
   }).then(function(data){
-   console.log(data)
   displayText(data)
   return data
   
@@ -45,40 +44,6 @@ var coinToID = {
   'Dogecoin (DOGE)':'doge-dogecoin',
   }
 
-
-//function to get current price of crypto
-function currentPrice(){
-  removeAllChildNodes(container)
-  fetch(localQueryUrl)
-    .then(function(response){
-      return response.json()
-    }).then(function(data){
-      console.log(data)
-      displayText(data)
-      return data
-    }) 
-}
-
-//Removing the price info if there is a previous price result present 
-function removeAllChildNodes(parent){
-  parent.removeChild(parent.firstChild)
-}
-
-// Likely removable now that charts and calculations are implemented
-displayText=function(results){
-  for (var i = 0; i < 1; i++) {
-    var price = results[i].quotes.USD.price
-    price = price.toFixed(2)
-    container.innerHTML= "Current Price"
-    var priceEl = document.createElement("div")
-    priceEl.setAttribute('class','results1')
-    priceEl.innerHTML= price
-    var element = document.getElementById("results")
-    
-    element.appendChild(priceEl)
-  }
-}
-
 ///event listener on submit crypto button
 function callCryptoAPI() {
   let searchValue= cryptoSelect.value;
@@ -94,13 +59,8 @@ function callCryptoAPI() {
   // Historical chart data api url
   let historicalUrl = "https://api.coinpaprika.com/v1/tickers/"+coinToID[searchValue]+"/historical?start=" + queryDate + "&interval="+interval+"d";
 
-  // Old historical call url
-  //var historicalUrl= "https://api.coinpaprika.com/v1/coins/"+coinToID[searchValue]+"/ohlcv/historical?start="+queryDate
-
   // Current price data api url
   let currentUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/markets";
-  
-  console.log(searchValue,coinToID[searchValue])
 
   // Long series of .then calls to make sure that both historical and current price data are passed to the charting functions
   fetch(historicalUrl)
@@ -111,7 +71,7 @@ function callCryptoAPI() {
         .then(function(response){
           return response.json()
         }).then(function(data){
-          calcAndChart(searchValue.split(' ')[0],data[0].quotes.USD.price,historical,'coin');
+          calcAndChart(searchValue,data[0].quotes.USD.price,historical,'coin');
         }) 
     })
 }
@@ -119,18 +79,19 @@ function callCryptoAPI() {
 
 submitCrypto.addEventListener("click",callCryptoAPI);
 
-dateEl.addEventListener("blur",function(){
-var today=moment().format().split("T")[0]
-var searchDate= dateEl.value
-var searchDate= moment(searchDate).format()
-var queryDate= searchDate.split("T")[0]
-if (queryDate > today){
-  validDate= false
-} 
-else(validDate=true)
-enableSearch()
-errorMessage()
-
+dateEl.addEventListener("change",function(){
+  var today=moment().format().split("T")[0]
+  var searchDate= dateEl.value
+  var searchDate= moment(searchDate).format()
+  var queryDate= searchDate.split("T")[0]
+  if (queryDate > today){
+    validDate= false
+  } 
+  else {
+    validDate=true
+  }
+  enableSearch()
+  errorMessage()
 })
 //Disabling button if info is missing 
 
@@ -139,31 +100,36 @@ var investZero= true
 function investVal(){
   let investNumber = Number(investBox.value.replace(/[^0-9\.-]+/g,""))
   if (investBox.value==""||investNumber==0){
-    investZero
-  = true
+    investZero = true
+  } else {
+    investZero=false
   }
-  else(investZero=false)
   enableSearch()
 }
+
 //function to enable/disable search button
-function enableSearch(){
-if (dateEl.value.length != "0" && investZero===false && validDate===true && (cryptoSelect.value !=""||selectStock.value !="")){
-document.querySelector("#submit-crypto").disabled=false 
-document.querySelector("#submit-stock").disabled=false 
+function enableSearch() {
+  if (dateEl.value.length != "0" && investZero===false && validDate===true && (cryptoSelect.value !=""||selectStock.value !="")){
+    document.querySelector("#submit-crypto").disabled=false 
+    document.querySelector("#submit-stock").disabled=false 
+  } else {
+    document.querySelector("#submit-crypto").disabled=true
+    document.querySelector("#submit-stock").disabled=true
+  }
 }
-else {document.querySelector("#submit-crypto").disabled=true, document.querySelector("#submit-stock").disabled=true}
-console.log(dateEl.value.length)
-}
+
 //error message for invalid date 
 function errorMessage() {
   if (validDate== false)
   {
     document.querySelector("#error").innerHTML = "<span style='color: red;'>"+ "Please enter valid date"
+  } else {
+    document.querySelector("#error").innerHTML =""
   }
-  else(document.querySelector("#error").innerHTML ="")
 }
+
 selectStock.addEventListener("blur",enableSearch)
 investBox.addEventListener("keyup",investVal)
 investBox.addEventListener("keydown",enableSearch)
 investBox.addEventListener("blur",enableSearch)
-cryptoSelect.addEventListener("blur",enableSearch)
+cryptoSelect.addEventListener("change",enableSearch)
