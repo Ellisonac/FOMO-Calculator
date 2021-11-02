@@ -21,4 +21,4 @@ And learn about our process at: [FOMO Calculator Presentation](https://docs.goog
 
 ## Example Page Output
 
-![FOMO calculator screenshot](./assets/final.png)
+![FOMO calculator screenshot](./Assets/final.png)
