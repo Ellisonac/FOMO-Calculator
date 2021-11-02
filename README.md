@@ -12,5 +12,6 @@ This application uses historical bitcoin and stock exchange data to show a user 
 
 See the app live at: [FOMO Calculator](https://jasminetuff.github.io/FOMO-Calculator/)
 
-A screenshot of the finished app is shown below:
+## Example Page Output
+
 ![FOMO calculator screenshot](./assets/final.png)
