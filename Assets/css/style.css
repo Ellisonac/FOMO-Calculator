@@ -63,6 +63,7 @@ body {
 .card {
   padding: 1%;
 }
+
 #sub {
   padding: 1%;
 }
@@ -75,6 +76,7 @@ body {
   height: 170px;
 }
 
+#info-twitter .card,
 #sub-info div .card {
   position: relative;
   display: flex;
@@ -105,6 +107,10 @@ body {
   font-size: 1.5rem;
 }
 
+.card-tweet {
+  font-size: .9rem;
+}
+
 #info-main {
   font-size: 1.3rem;
   font-weight: bold;
@@ -130,4 +136,8 @@ body {
 
 .copyright {
   text-align: center;
+}
+
+#blank {
+    height: 60px;
 }

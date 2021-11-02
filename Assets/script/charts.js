@@ -20,6 +20,9 @@ function calcAndChart(name,currentPrice,historicalData,type) {
     currentPrice = values.prices[values.prices.length-1]
   }
 
+  // Show tweet box if type=='coin'
+  infoTwitter.setAttribute('style',type === 'coin'?'display:block;':'display:none;');
+
   // Create and display historical price chart function call
   displayTicker(values,name,type);
 
@@ -208,6 +211,32 @@ function displayCalcs(values,currentPrice,name) {
   // Display calculation elements after data has been first populated
   document.querySelector("#calculation-container").setAttribute("style","display:block");
 
+}
+
+//Twitter API call
+function getTweet() {
+  let searchValue= cryptoSelect.value;
+  var twitterUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/twitter";
+  fetch(twitterUrl)
+    .then(function(response){
+      return response.json()
+    }).then(function(data){
+
+      let tweetHeader = document.createElement("h2");
+      tweetHeader.textContent = "Latest Dev Tweet:";
+      tweetHeader.classList = "card-title";
+
+      var tweetStatus = document.createElement('h4');
+      tweetStatus.textContent = "'" + data[0].status + "'" + "- @" +data[0].user_name;
+      tweetStatus.classList = "card-tweet";
+
+      infoTwitter.append(tweetHeader)
+      infoTwitter.append(document.createElement("br"))
+      infoTwitter.append(document.createElement("br"))
+      infoTwitter.append(tweetStatus)
+      infoTwitter.append(document.createElement("br"))
+      
+    });
 }
 
 // Utility Functions
