@@ -20,6 +20,9 @@ function calcAndChart(name,currentPrice,historicalData,type) {
     currentPrice = values.prices[values.prices.length-1]
   }
 
+  // Show tweet box if type=='coin'
+  infoTwitter.setAttribute('style',type === 'coin'?'display:block;':'display:none;');
+
   // Create and display historical price chart function call
   displayTicker(values,name,type);
 

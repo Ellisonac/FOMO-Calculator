@@ -6,7 +6,7 @@ var otherQuestions = document.querySelector(".otherQuestions");
 var stockCalBtn = document.querySelector('.stockCalBtn');
 var cryptoCalBtn = document.querySelector('.cryptoCalBtn');
 
-
+// Methods to swap between stock and crypto currency drop downs and submit buttons
 var stockBtn
 stocksSwitch.addEventListener("click", function() {
     stocksSwitch.children[0].classList = "button is-primary"
@@ -31,6 +31,3 @@ cryptoSwitch.addEventListener("click", function() {
     cryptoCalBtn.style.display = "block";
    
 });
-
-
-// next step is to add a reset function to restore the orighinal stock or crypto button so they can calculate more if needed. this will have to be done after we establiush the results area. I was thinking to add a button there "calcute again" or something like that and it will reset the fuction. not sure but that would be my next
