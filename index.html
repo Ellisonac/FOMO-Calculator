@@ -28,13 +28,12 @@
             </p>
         </div>
     </section>
-
     <div class="columns">
         <!-- Sidebar to the left -->
         <div class="column is-one-third" id="aside">
             <div class="columns is-mobile">
 
-                <!-- This is where you will selecte either stock or crypto and based on your selection the next form will appear and another will hide. -->
+                <!-- This is where you will select either stock or crypto and based on your selection the next form will appear and another will hide. -->
                 <div class="flex">
                     <div class="stockBtn m-1">
                         <button class="button is-primary">
@@ -49,7 +48,7 @@
                 </div>
             </div>
 
-            <!-- This is where the Stock search box will go -->
+            <!-- Dropdown for Stock options -->
             <div class="column stocks">
                 <p class="bd-notification is-info"><strong>Stocks</strong></p>
                 <div>
@@ -72,7 +71,6 @@
             </div>
 
             <!-- Dropdown for Crypto -->
-            <!-- <div class="crypto"> -->
             <div class="column crypto">
                 <p class="bd-notification is-info"><strong>Crypto</strong></p>
                 <div class="select is-primary">
@@ -105,19 +103,17 @@
                     <p class="investment">Investment Amount</p>
                     <input class="input" id="invest" type="" placeholder="Money">
                 </div>
+                <!-- Stock/crypto user select buttons -->
                 <div class="column">
                     <div class="stockCalBtn">
                         <button class="button is-primary is-focused" id="submit-stock">Calculate!</button>
                     </div>
-                    <!-- stock submit button, will appear only for crypto. I can add the id from the submit buttons -->
                     <div class="cryptoCalBtn">
                         <button class="button is-primary is-focused" id="submit-crypto">Calculate!</button>
-                        <!-- crypto submit button, will appear only for crypto. I can add the id from the submit buttons -->
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="column">
             <!-- Results output column -->
             <div class="column" id="calculations">

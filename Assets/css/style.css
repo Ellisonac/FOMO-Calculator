@@ -28,6 +28,7 @@ body {
   margin-top: 0;
 }
 
+/* Controlling visibility of input fields before user selects a type */
 .otherQuestions {
   display: none;
 }
@@ -56,6 +57,7 @@ body {
   display: none;
 }
 
+/* Styling non-selected button border */
 .is-inverted {
   border: 1px solid var(--maincolor) !important;
 }
@@ -68,10 +70,12 @@ body {
   padding: 1%;
 }
 
+/* Hiding output until calculations submitted */
 #calculation-container {
   display: none;
 }
 
+/* Styling output cards for calculations and tweet */
 #sub-info div {
   height: 170px;
 }
@@ -121,6 +125,7 @@ body {
   box-shadow: 5px 5px 7px darkgray;
 }
 
+/* Footer fixed position and spacing */
 .footer2 {
   position: fixed;
   left: 0;
