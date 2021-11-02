@@ -210,6 +210,32 @@ function displayCalcs(values,currentPrice,name) {
 
 }
 
+//Twitter API call
+function getTweet() {
+  let searchValue= cryptoSelect.value;
+  var twitterUrl= "https://api.coinpaprika.com/v1/coins/" +coinToID[searchValue] +"/twitter";
+  fetch(twitterUrl)
+    .then(function(response){
+      return response.json()
+    }).then(function(data){
+
+      let tweetHeader = document.createElement("h2");
+      tweetHeader.textContent = "Latest Dev Tweet:";
+      tweetHeader.classList = "card-title";
+
+      var tweetStatus = document.createElement('h4');
+      tweetStatus.textContent = "'" + data[0].status + "'" + "- @" +data[0].user_name;
+      tweetStatus.classList = "card-tweet";
+
+      infoTwitter.append(tweetHeader)
+      infoTwitter.append(document.createElement("br"))
+      infoTwitter.append(document.createElement("br"))
+      infoTwitter.append(tweetStatus)
+      infoTwitter.append(document.createElement("br"))
+      
+    });
+}
+
 // Utility Functions
 // Function to determine which day interval to call from coinpaprika so that results are smooth and cover the whole date range.
 function determineInterval(startDate,endDate) {

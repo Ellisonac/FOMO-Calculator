@@ -72,6 +72,7 @@ function callCryptoAPI() {
           return response.json()
         }).then(function(data){
           calcAndChart(searchValue,data[0].quotes.USD.price,historical,'coin');
+          getTweet();
         }) 
     })
 }
